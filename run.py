@@ -30,7 +30,7 @@ def start_world():
 def rehearse(brain: dict, version: str) -> dict:
     results = {}
     for g in GUESTS:
-        r = assistant.handle(brain, g["id"], g["message"], fake_key=f"{version}:{g['id']}")
+        r = assistant.handle(brain, g["id"], g.get("message") or "EVENT (no guest message): " + json.dumps(g["event"]), fake_key=f"{version}:{g['id']}")
         results[g["id"]] = (check.check(g, r), r)
     return results
 
@@ -39,7 +39,7 @@ def scoreboard(before: dict, after: dict, title: str):
     t.add_column("guest"); t.add_column("asks"); t.add_column("before"); t.add_column("after"); t.add_column("why")
     for g in GUESTS:
         (okb, _), _ = before[g["id"]]; (oka, why), _ = after[g["id"]]
-        t.add_row(g["id"], g["message"][:38], "✓" if okb else "✗", "[green]✓[/]" if oka else "[red]✗[/]", "" if oka else why)
+        t.add_row(g["id"], (g.get("message") or g["label"])[:38], "✓" if okb else "✗", "[green]✓[/]" if oka else "[red]✗[/]", "" if oka else why)
     con.print(t)
     return sum(1 for g in GUESTS if after[g["id"]][0][0])
 
@@ -71,7 +71,7 @@ def main():
 
         con.rule("[bold]4. Rehearsal before going live")
         after = rehearse(brain, "v1")
-        passed = scoreboard(before, after, "five guests, before vs after the correction")
+        passed = scoreboard(before, after, "five guests + two tasks, before vs after the correction")
 
         rnd = 2
         while passed < len(GUESTS) and rnd <= 3:
@@ -86,7 +86,7 @@ def main():
 
         con.rule()
         if passed == len(GUESTS):
-            con.print("[bold green]Support is ready.[/] Taught once, confirmed, proven on five guests. Nothing was sent to anyone.")
+            con.print("[bold green]Support is ready.[/] Taught once, confirmed, proven on five guests and two tasks. Nothing was sent to anyone.")
         else:
             con.print("[bold red]Not ready.[/] Support stays off until every guest passes.")
     finally:

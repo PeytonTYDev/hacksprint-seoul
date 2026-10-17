@@ -1,25 +1,158 @@
 {
-  "v0:g1": {"reply": "The Saturday beginner wheel class is $50, 10:00 to 12:30. Book 14 days ahead and it's $45. Hana", "actions": []},
-  "v0:g2": {"reply": "Sure, no problem. The $20 deposit can be paid any time before the class, including on the day. Hana", "actions": []},
-  "v0:g3": {"reply": "Lovely, Mina. I've booked the Saturday class for 2. Here's the link for the $20 deposit. Hana",
-            "actions": [{"type": "book", "name": "Mina", "class": "saturday_beginner_wheel", "people": 2},
-                        {"type": "payment_link", "amount": 20, "for": "Mina"}]},
-  "v0:g4": {"reply": "A $20 deposit holds your spot. Pay it any time before the class. Hana", "actions": []},
-  "v0:g5": {"reply": "Full refund 7 or more days before. 50% within 7 days. No refund within 48 hours. Hana", "actions": []},
-
-  "v1:g1": {"reply": "The Saturday beginner wheel class is $50, 10:00 to 12:30. Book 14 days ahead and it's $45. Hana", "actions": []},
-  "v1:g2": {"reply": "We ask for a 30% deposit at booking. The spot isn't held until it's paid. Hana", "actions": []},
-  "v1:g3": {"reply": "Lovely, Mina. I've booked the Saturday class for 2. Here's the link for the 30% deposit, $30. Hana",
-            "actions": [{"type": "book", "name": "Mina", "class": "saturday_beginner_wheel", "people": 2},
-                        {"type": "payment_link", "amount": 30, "for": "Mina"}]},
-  "v1:g4": {"reply": "Message us with the class and your name. We send a payment link for the $20 deposit. Hana", "actions": []},
-  "v1:g5": {"reply": "Full refund 7 or more days before. 50% within 7 days. No refund within 48 hours. Hana", "actions": []},
-
-  "v2:g1": {"reply": "The Saturday beginner wheel class is $50, 10:00 to 12:30. Book 14 days ahead and it's $45. Hana", "actions": []},
-  "v2:g2": {"reply": "We ask for a 30% deposit at booking. The spot isn't held until it's paid. Hana", "actions": []},
-  "v2:g3": {"reply": "Lovely, Mina. I've booked the Saturday class for 2. Here's the link for the 30% deposit, $30. Hana",
-            "actions": [{"type": "book", "name": "Mina", "class": "saturday_beginner_wheel", "people": 2},
-                        {"type": "payment_link", "amount": 30, "for": "Mina"}]},
-  "v2:g4": {"reply": "A 30% deposit at booking holds your spot. We send the payment link when you book. Hana", "actions": []},
-  "v2:g5": {"reply": "Full refund 7 or more days before. 50% within 7 days. No refund within 48 hours. Hana", "actions": []}
+ "v0:g1": {
+  "reply": "The Saturday beginner wheel class is $50, 10:00 to 12:30. Book 14 days ahead and it's $45. Hana",
+  "actions": []
+ },
+ "v0:g2": {
+  "reply": "Sure, no problem. The $20 deposit can be paid any time before the class, including on the day. Hana",
+  "actions": []
+ },
+ "v0:g3": {
+  "reply": "Lovely, Mina. I've booked the Saturday class for 2. Here's the link for the $20 deposit. Hana",
+  "actions": [
+   {
+    "type": "book",
+    "name": "Mina",
+    "class": "saturday_beginner_wheel",
+    "people": 2
+   },
+   {
+    "type": "payment_link",
+    "amount": 20,
+    "for": "Mina"
+   }
+  ]
+ },
+ "v0:g4": {
+  "reply": "A $20 deposit holds your spot. Pay it any time before the class. Hana",
+  "actions": []
+ },
+ "v0:g5": {
+  "reply": "Full refund 7 or more days before. 50% within 7 days. No refund within 48 hours. Hana",
+  "actions": []
+ },
+ "v1:g1": {
+  "reply": "The Saturday beginner wheel class is $50, 10:00 to 12:30. Book 14 days ahead and it's $45. Hana",
+  "actions": []
+ },
+ "v1:g2": {
+  "reply": "We ask for a 30% deposit at booking. The spot isn't held until it's paid. Hana",
+  "actions": []
+ },
+ "v1:g3": {
+  "reply": "Lovely, Mina. I've booked the Saturday class for 2. Here's the link for the 30% deposit, $30. Hana",
+  "actions": [
+   {
+    "type": "book",
+    "name": "Mina",
+    "class": "saturday_beginner_wheel",
+    "people": 2
+   },
+   {
+    "type": "payment_link",
+    "amount": 30,
+    "for": "Mina"
+   }
+  ]
+ },
+ "v1:g4": {
+  "reply": "Message us with the class and your name. We send a payment link for the $20 deposit. Hana",
+  "actions": []
+ },
+ "v1:g5": {
+  "reply": "Full refund 7 or more days before. 50% within 7 days. No refund within 48 hours. Hana",
+  "actions": []
+ },
+ "v2:g1": {
+  "reply": "The Saturday beginner wheel class is $50, 10:00 to 12:30. Book 14 days ahead and it's $45. Hana",
+  "actions": []
+ },
+ "v2:g2": {
+  "reply": "We ask for a 30% deposit at booking. The spot isn't held until it's paid. Hana",
+  "actions": []
+ },
+ "v2:g3": {
+  "reply": "Lovely, Mina. I've booked the Saturday class for 2. Here's the link for the 30% deposit, $30. Hana",
+  "actions": [
+   {
+    "type": "book",
+    "name": "Mina",
+    "class": "saturday_beginner_wheel",
+    "people": 2
+   },
+   {
+    "type": "payment_link",
+    "amount": 30,
+    "for": "Mina"
+   }
+  ]
+ },
+ "v2:g4": {
+  "reply": "A 30% deposit at booking holds your spot. We send the payment link when you book. Hana",
+  "actions": []
+ },
+ "v2:g5": {
+  "reply": "Full refund 7 or more days before. 50% within 7 days. No refund within 48 hours. Hana",
+  "actions": []
+ },
+ "v0:t1": {
+  "reply": "Hi Mina, a quick nudge: the $20 deposit for Saturday is still open. Here's the link. Hana",
+  "actions": [
+   {
+    "type": "chase",
+    "to": "Mina",
+    "amount": 20
+   }
+  ]
+ },
+ "v1:t1": {
+  "reply": "Hi Mina, your Saturday spot isn't held yet. The 30% deposit is $30, link below. Hana",
+  "actions": [
+   {
+    "type": "chase",
+    "to": "Mina",
+    "amount": 30
+   }
+  ]
+ },
+ "v2:t1": {
+  "reply": "Hi Mina, your Saturday spot isn't held yet. The 30% deposit is $30, link below. Hana",
+  "actions": [
+   {
+    "type": "chase",
+    "to": "Mina",
+    "amount": 30
+   }
+  ]
+ },
+ "v0:t2": {
+  "reply": "See you tomorrow at 10:00, Jun. $30 remaining on the day. Wear clothes you don't mind getting muddy. Hana",
+  "actions": [
+   {
+    "type": "reminder",
+    "to": "Jun",
+    "balance_due": 30
+   }
+  ]
+ },
+ "v1:t2": {
+  "reply": "See you tomorrow at 10:00, Jun. Balance of $35 on the day. Wear clothes you don't mind getting muddy. Hana",
+  "actions": [
+   {
+    "type": "reminder",
+    "to": "Jun",
+    "balance_due": 35
+   }
+  ]
+ },
+ "v2:t2": {
+  "reply": "See you tomorrow at 10:00, Jun. Balance of $35 on the day. Wear clothes you don't mind getting muddy. Hana",
+  "actions": [
+   {
+    "type": "reminder",
+    "to": "Jun",
+    "balance_due": 35
+   }
+  ]
+ }
 }

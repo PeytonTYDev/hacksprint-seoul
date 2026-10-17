@@ -1,13 +1,107 @@
 [
-  {"id": "g1", "message": "Hi, how much is the Saturday beginner wheel class?",
-   "reply_must": ["50"], "reply_must_not": []},
-  {"id": "g2", "message": "Can I just pay the deposit on the day?",
-   "reply_must": ["30%"], "reply_must_not": ["$20", "on the day is fine", "no problem"]},
-  {"id": "g3", "message": "I'd like to book the Saturday class for 2 people. My name is Mina.",
-   "reply_must": [], "reply_must_not": ["$20"],
-   "ledger_must": {"book": {"people": 2}, "payment_link": {"amount": 30}}},
-  {"id": "g4", "message": "What's your deposit policy?",
-   "reply_must": ["30%"], "reply_must_not": ["$20"]},
-  {"id": "g5", "message": "Do you give refunds if I cancel?",
-   "reply_must": ["7"], "reply_must_not": []}
+ {
+  "id": "g1",
+  "message": "Hi, how much is the Saturday beginner wheel class?",
+  "reply_must": [
+   "50"
+  ],
+  "reply_must_not": []
+ },
+ {
+  "id": "g2",
+  "message": "Can I just pay the deposit on the day?",
+  "reply_must": [
+   "30%"
+  ],
+  "reply_must_not": [
+   "$20",
+   "on the day is fine",
+   "no problem"
+  ]
+ },
+ {
+  "id": "g3",
+  "message": "I'd like to book the Saturday class for 2 people. My name is Mina.",
+  "reply_must": [],
+  "reply_must_not": [
+   "$20"
+  ],
+  "ledger_must": {
+   "book": {
+    "people": 2
+   },
+   "payment_link": {
+    "amount": 30
+   }
+  }
+ },
+ {
+  "id": "g4",
+  "message": "What's your deposit policy?",
+  "reply_must": [
+   "30%"
+  ],
+  "reply_must_not": [
+   "$20"
+  ]
+ },
+ {
+  "id": "g5",
+  "message": "Do you give refunds if I cancel?",
+  "reply_must": [
+   "7"
+  ],
+  "reply_must_not": []
+ },
+ {
+  "id": "t1",
+  "label": "TASK deposit unpaid 3 days (Mina, 2 people)",
+  "event": {
+   "type": "deposit_unpaid",
+   "booking": {
+    "name": "Mina",
+    "class": "saturday_beginner_wheel",
+    "people": 2,
+    "booked_days_ago": 3,
+    "paid": 0
+   }
+  },
+  "reply_must": [
+   "30"
+  ],
+  "reply_must_not": [
+   "$20"
+  ],
+  "ledger_must": {
+   "chase": {
+    "amount": 30
+   }
+  }
+ },
+ {
+  "id": "t2",
+  "label": "TASK class tomorrow reminder (Jun, 1 person, deposit paid)",
+  "event": {
+   "type": "class_tomorrow",
+   "booking": {
+    "name": "Jun",
+    "class": "saturday_beginner_wheel",
+    "people": 1,
+    "deposit_paid": 15
+   }
+  },
+  "reply_must": [
+   "35"
+  ],
+  "reply_must_not": [
+   "$20",
+   "30 remaining",
+   "$30 "
+  ],
+  "ledger_must": {
+   "reminder": {
+    "balance_due": 35
+   }
+  }
+ }
 ]
