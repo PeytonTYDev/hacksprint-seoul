@@ -2,7 +2,7 @@
 
 Every step: what you do, what you ask the AI, what you should see, what to do if not.
 Keep one terminal open in `~/gitrepo/hacksprint-seoul`. Every command starts with
-`.venv/bin/python`. If something breaks, paste the full error to the AI and say
+`doppler run -- .venv/bin/python`. If something breaks, paste the full error to the AI and say
 "explain this in plain words, then fix only this".
 
 ```
@@ -24,18 +24,18 @@ Copy `.env.example` to `.env`. Paste `DAYTONA_API_KEY` (app.daytona.io → API k
 `LLM_API_KEY` (OpenRouter). Never commit `.env` (it's gitignored; check with `git status`).
 
 ### 1. The box works
-Run `.venv/bin/python smoke.py`. See four timed lines and `PASS` under 30 s.
+Run `doppler run -- .venv/bin/python smoke.py`. See four timed lines and `PASS` under 30 s.
 If `SLOW`: ask the AI "make a Daytona snapshot with openai and python-dotenv preinstalled
 and use it in smoke.py". If an auth error: the key is wrong or not loaded; `cat .env`.
 
 ### 2. The loop works offline
-`LLM_FAKE=1 .venv/bin/python run.py`. Type the correction (or press Enter for the default),
+`LLM_FAKE=1 doppler run -- .venv/bin/python run.py`. Type the correction (or press Enter for the default),
 answer `y` twice. See: the wrong reply, your correction, the proposal, a 7-row table with
 one ✗ (g4), a second proposal, a clean table, "Support is ready".
 Then `cp fixtures/brain.original.json brain.json` to reset the Brain for next time.
 
 ### 3. The loop works with the real model
-`.venv/bin/python run.py`. Same flow, but Gemini writes the replies. Expect differences:
+`doppler run -- .venv/bin/python run.py`. Same flow, but Gemini writes the replies. Expect differences:
 - A reply passes or fails on words. If a correct reply fails on wording (e.g. says
   "thirty percent"), loosen `reply_must` in `guests.json` to a word that will always be
   there, or add alternatives. Ask the AI: "g2 failed on wording, here is the reply; make
@@ -48,7 +48,7 @@ Then `cp fixtures/brain.original.json brain.json` to reset the Brain for next ti
 Run it twice. Reset the Brain between runs.
 
 ### 4. One scenario, standalone
-`.venv/bin/python rehearse_one.py t1 v1` → one JSON line with `release_hold`.
+`doppler run -- .venv/bin/python rehearse_one.py t1 v1` → one JSON line with `release_hold`.
 This is exactly what each box runs tomorrow.
 
 ### 5. Read every file once
@@ -63,7 +63,7 @@ Ask the AI, with TECH-SPEC.md §4 open:
 /home/daytona/app keeping paths: assistant.py, rehearse_one.py, brain.json, guests.json,
 world/services.py, fixtures/*.json; then exec `pip install -q openai python-dotenv` in
 that folder. Print the box id and seconds. Return the sandbox."
-Test: `.venv/bin/python -c "import box; b=box.prepare_base(); print(b.id); b.delete()"`.
+Test: `doppler run -- .venv/bin/python -c "import box; b=box.prepare_base(); print(b.id); b.delete()"`.
 
 ### 7. box.py, part two: fork, run, collect (15:25–16:00)
 Ask: "Add run_all(base, version): for each scenario id in guests.json, fork the base,
@@ -72,14 +72,14 @@ LLM_MODEL, LLM_BASE_URL from my .env, parse the last stdout line as JSON, delete
 Run the seven in parallel with a thread pool. Print box id and seconds per scenario.
 Return {id: {'reply':..., 'actions':[...]}}. On any exception for one scenario, return
 {'reply': 'box error: ...', 'actions': []} and keep going."
-Test: `.venv/bin/python -c "import box,json; b=box.prepare_base(); print(json.dumps(box.run_all(b,'v1'),indent=1)); b.delete()"`.
+Test: `doppler run -- .venv/bin/python -c "import box,json; b=box.prepare_base(); print(json.dumps(box.run_all(b,'v1'),indent=1)); b.delete()"`.
 Open the Daytona dashboard: you should see boxes appear and disappear.
 If `fork` errors: ask "fall back to creating 7 sandboxes and uploading the files to each".
 
 ### 8. Wire it in (16:00–16:20)
 Ask: "In run.py add a --boxes flag. When set, rehearse() calls box.run_all instead of the
 laptop loop. Prepare the base once at the start and delete it at the end. Everything else
-unchanged." Test: `.venv/bin/python run.py --boxes`.
+unchanged." Test: `doppler run -- .venv/bin/python run.py --boxes`.
 
 ### 9. Rehearse the demo (16:20–16:45)
 Full run twice with the dashboard visible. Record the better one (QuickTime, screen).
@@ -99,6 +99,6 @@ the --boxes flag. Commit. Breathe.
      MystFlo: working demos, no paying users. This check is designed, not built. Yet."
 
 ## If it breaks on stage
-1. `LLM_FAKE=1 .venv/bin/python run.py` — "this is the cached rehearsal from an hour ago".
+1. `LLM_FAKE=1 doppler run -- .venv/bin/python run.py` — "this is the cached rehearsal from an hour ago".
 2. The screen recording.
 3. `cat replay.txt`.
