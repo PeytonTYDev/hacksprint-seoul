@@ -19,9 +19,11 @@ Keep one terminal open in `~/gitrepo/hacksprint-seoul`. Every command starts wit
 
 ## Tonight
 
-### 0. Keys
-Copy `.env.example` to `.env`. Paste `DAYTONA_API_KEY` (app.daytona.io → API keys) and
-`LLM_API_KEY` (OpenRouter). Never commit `.env` (it's gitignored; check with `git status`).
+### 0. Keys (Doppler)
+Keys live in Doppler project `hacksprint`, config `dev`; this folder is already linked.
+`LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL` are set. Add the Daytona key once:
+`doppler secrets set DAYTONA_API_KEY=<key> --project hacksprint --config dev`
+Every command below is prefixed `doppler run --` so the keys are injected. No `.env` needed.
 
 ### 1. The box works
 Run `doppler run -- .venv/bin/python smoke.py`. See four timed lines and `PASS` under 30 s.
