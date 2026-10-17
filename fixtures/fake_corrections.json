@@ -1,6 +1,28 @@
 {
-  "round1": {"summary": "Deposit becomes 30% of the class price, due at booking; the spot is held only once it's paid.",
-             "changes": [{"path": "deposit", "new": "A 30% deposit is due at booking. Your spot is held once the deposit is paid."}]},
-  "round2": {"summary": "The 'How do I book?' FAQ still said $20. Updated to the 30% rule.",
-             "changes": [{"path": "faq.0.a", "new": "Message us with the class and your name. We send a payment link for the 30% deposit, and your spot is held once it's paid."}]}
+ "round1": {
+  "summary": "Deposit becomes 30% at booking; the spot is held only once it's paid. The same old rule was also in the early-bird line and the 'How do I book?' FAQ, so those change too.",
+  "changes": [
+   {
+    "path": "deposit",
+    "new": "A 30% deposit is required at booking to hold your spot. Your place is not reserved until it is paid."
+   },
+   {
+    "path": "classes.early_bird",
+    "new": "Book 14 or more days ahead: $45 instead of $50. The 30% deposit still applies."
+   },
+   {
+    "path": "faq.0.a",
+    "new": "Message us with the class and your name. We send a payment link for the 30% deposit to hold your spot."
+   }
+  ]
+ },
+ "round2": {
+  "summary": "The 'How do I book?' FAQ still said $20. Updated to the 30% rule.",
+  "changes": [
+   {
+    "path": "faq.0.a",
+    "new": "Message us with the class and your name. We send a payment link for the 30% deposit, and your spot is held once it's paid."
+   }
+  ]
+ }
 }

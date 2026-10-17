@@ -3,7 +3,11 @@
   "id": "g2",
   "message": "Can I just pay the deposit on the day?",
   "reply_must": [
-   "30%"
+   [
+    "30%",
+    "30 percent",
+    "thirty percent"
+   ]
   ],
   "reply_must_not": [
    "$20",
@@ -31,7 +35,11 @@
   "id": "g4",
   "message": "What's your deposit policy?",
   "reply_must": [
-   "30%"
+   [
+    "30%",
+    "30 percent",
+    "thirty percent"
+   ]
   ],
   "reply_must_not": [
    "$20"
@@ -47,7 +55,10 @@
   },
   "reply_must": [
    "50",
-   "30%"
+   [
+    "30%",
+    "30 percent"
+   ]
   ],
   "reply_must_not": [
    "$20"
@@ -71,7 +82,10 @@
    }
   },
   "reply_must": [
-   "30"
+   [
+    "30%",
+    "$30"
+   ]
   ],
   "reply_must_not": [
    "$20"

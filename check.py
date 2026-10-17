@@ -6,8 +6,9 @@ and what must the ledger show (what was actually booked / linked)."""
 def check(guest: dict, result: dict) -> tuple[bool, str]:
     reply = result["reply"].lower()
     for w in guest.get("reply_must", []):
-        if w.lower() not in reply:
-            return False, f'reply missing "{w}"'
+        options = w if isinstance(w, list) else [w]      # a list means "any of these"
+        if not any(o.lower() in reply for o in options):
+            return False, f'reply missing "{" / ".join(options)}"'
     for w in guest.get("reply_must_not", []):
         if w.lower() in reply:
             return False, f'reply still says "{w}" (old)'
