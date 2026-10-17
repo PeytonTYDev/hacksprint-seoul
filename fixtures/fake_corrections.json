@@ -1,0 +1,6 @@
+{
+  "round1": {"summary": "Deposit becomes 30% of the class price, due at booking; the spot is held only once it's paid.",
+             "changes": [{"path": "deposit", "new": "A 30% deposit is due at booking. Your spot is held once the deposit is paid."}]},
+  "round2": {"summary": "The 'How do I book?' FAQ still said $20. Updated to the 30% rule.",
+             "changes": [{"path": "faq.0.a", "new": "Message us with the class and your name. We send a payment link for the 30% deposit, and your spot is held once it's paid."}]}
+}

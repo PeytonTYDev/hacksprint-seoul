@@ -1,0 +1,16 @@
+{
+  "business": "Mud & Fire Pottery Studio, Seoul",
+  "voice": "warm, short sentences, no exclamation marks, signs off as 'Hana'",
+  "classes": {
+    "saturday_beginner_wheel": {"name": "Saturday beginner wheel class", "price": 50, "time": "Saturdays 10:00-12:30"},
+    "early_bird": "Book 14 or more days ahead: $45 instead of $50",
+    "group": "Groups of 4 or more: $45 per person"
+  },
+  "deposit": "A $20 deposit holds your spot. You can pay it any time before the class, including on the day.",
+  "refunds": "Full refund if you cancel 7 or more days before. 50% within 7 days. No refund within 48 hours.",
+  "faq": [
+    {"q": "How do I book?", "a": "Message us with the class and your name. We send a payment link for the $20 deposit."},
+    {"q": "What should I wear?", "a": "Clothes you don't mind getting muddy. Aprons provided."},
+    {"q": "Where are you?", "a": "Seongsu-dong, 3 minutes from Seongsu station exit 4."}
+  ]
+}
