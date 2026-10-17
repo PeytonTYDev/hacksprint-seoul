@@ -96,62 +96,59 @@
   "actions": []
  },
  "v0:t1": {
-  "reply": "Hi Mina, a quick nudge: the $20 deposit for Saturday is still open. Here's the link. Hana",
+  "reply": "Deposit can be paid any time before class, so Mina's spot stays held.",
   "actions": [
    {
-    "type": "chase",
-    "to": "Mina",
-    "amount": 20
+    "type": "keep_hold",
+    "name": "Mina"
    }
   ]
  },
  "v1:t1": {
-  "reply": "Hi Mina, your Saturday spot isn't held yet. The 30% deposit is $30, link below. Hana",
+  "reply": "48h unpaid and the spot is only held once the 30% deposit is paid. Releasing Mina's hold.",
   "actions": [
    {
-    "type": "chase",
-    "to": "Mina",
-    "amount": 30
+    "type": "release_hold",
+    "name": "Mina"
    }
   ]
  },
  "v2:t1": {
-  "reply": "Hi Mina, your Saturday spot isn't held yet. The 30% deposit is $30, link below. Hana",
+  "reply": "48h unpaid and the spot is only held once the 30% deposit is paid. Releasing Mina's hold.",
   "actions": [
    {
-    "type": "chase",
-    "to": "Mina",
-    "amount": 30
+    "type": "release_hold",
+    "name": "Mina"
    }
   ]
  },
  "v0:t2": {
-  "reply": "See you tomorrow at 10:00, Jun. $30 remaining on the day. Wear clothes you don't mind getting muddy. Hana",
+  "reply": "10 days before class: full refund of the $15 paid.",
   "actions": [
    {
-    "type": "reminder",
-    "to": "Jun",
-    "balance_due": 30
+    "type": "refund",
+    "name": "Jun",
+    "amount": 15
    }
   ]
  },
  "v1:t2": {
-  "reply": "See you tomorrow at 10:00, Jun. Balance of $35 on the day. Wear clothes you don't mind getting muddy. Hana",
+  "reply": "10 days before class: full refund of the $15 paid.",
   "actions": [
    {
-    "type": "reminder",
-    "to": "Jun",
-    "balance_due": 35
+    "type": "refund",
+    "name": "Jun",
+    "amount": 15
    }
   ]
  },
  "v2:t2": {
-  "reply": "See you tomorrow at 10:00, Jun. Balance of $35 on the day. Wear clothes you don't mind getting muddy. Hana",
+  "reply": "10 days before class: full refund of the $15 paid.",
   "actions": [
    {
-    "type": "reminder",
-    "to": "Jun",
-    "balance_due": 35
+    "type": "refund",
+    "name": "Jun",
+    "amount": 15
    }
   ]
  }

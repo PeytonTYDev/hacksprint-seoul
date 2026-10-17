@@ -55,52 +55,43 @@
  },
  {
   "id": "t1",
-  "label": "TASK deposit unpaid 3 days (Mina, 2 people)",
+  "label": "TASK 48h passed, Mina's deposit unpaid \u2192 keep or release the spot?",
   "event": {
-   "type": "deposit_unpaid",
+   "type": "hold_review",
    "booking": {
     "name": "Mina",
     "class": "saturday_beginner_wheel",
     "people": 2,
-    "booked_days_ago": 3,
+    "hours_since_booking": 48,
     "paid": 0
    }
   },
-  "reply_must": [
-   "30"
-  ],
-  "reply_must_not": [
-   "$20"
-  ],
+  "reply_must": [],
+  "reply_must_not": [],
   "ledger_must": {
-   "chase": {
-    "amount": 30
+   "release_hold": {
+    "name": "Mina"
    }
   }
  },
  {
   "id": "t2",
-  "label": "TASK class tomorrow reminder (Jun, 1 person, deposit paid)",
+  "label": "TASK Jun cancels 10 days before, paid $15 deposit \u2192 refund?",
   "event": {
-   "type": "class_tomorrow",
+   "type": "cancellation",
    "booking": {
     "name": "Jun",
     "class": "saturday_beginner_wheel",
     "people": 1,
-    "deposit_paid": 15
+    "days_before_class": 10,
+    "paid": 15
    }
   },
-  "reply_must": [
-   "35"
-  ],
-  "reply_must_not": [
-   "$20",
-   "30 remaining",
-   "$30 "
-  ],
+  "reply_must": [],
+  "reply_must_not": [],
   "ledger_must": {
-   "reminder": {
-    "balance_due": 35
+   "refund": {
+    "amount": 15
    }
   }
  }
