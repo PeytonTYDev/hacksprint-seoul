@@ -1,13 +1,5 @@
 [
  {
-  "id": "g1",
-  "message": "Hi, how much is the Saturday beginner wheel class?",
-  "reply_must": [
-   "50"
-  ],
-  "reply_must_not": []
- },
- {
   "id": "g2",
   "message": "Can I just pay the deposit on the day?",
   "reply_must": [
@@ -46,12 +38,49 @@
   ]
  },
  {
-  "id": "g5",
-  "message": "Do you give refunds if I cancel?",
+  "id": "c1",
+  "label": "CONTENT write the Luma event listing for the Saturday class",
+  "event": {
+   "type": "event_listing",
+   "class": "saturday_beginner_wheel",
+   "publish_to": "luma"
+  },
   "reply_must": [
-   "7"
+   "50",
+   "30%"
   ],
-  "reply_must_not": []
+  "reply_must_not": [
+   "$20"
+  ],
+  "ledger_must": {
+   "publish_event": {
+    "price": 50
+   }
+  }
+ },
+ {
+  "id": "c2",
+  "label": "EMAIL draft the booking confirmation for Mina (2 people)",
+  "event": {
+   "type": "email_draft",
+   "booking": {
+    "name": "Mina",
+    "class": "saturday_beginner_wheel",
+    "people": 2,
+    "email": "mina@example.com"
+   }
+  },
+  "reply_must": [
+   "30"
+  ],
+  "reply_must_not": [
+   "$20"
+  ],
+  "ledger_must": {
+   "draft_email": {
+    "to": "mina@example.com"
+   }
+  }
  },
  {
   "id": "t1",

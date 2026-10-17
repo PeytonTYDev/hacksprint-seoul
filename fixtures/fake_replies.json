@@ -1,8 +1,4 @@
 {
- "v0:g1": {
-  "reply": "The Saturday beginner wheel class is $50, 10:00 to 12:30. Book 14 days ahead and it's $45. Hana",
-  "actions": []
- },
  "v0:g2": {
   "reply": "Sure, no problem. The $20 deposit can be paid any time before the class, including on the day. Hana",
   "actions": []
@@ -25,14 +21,6 @@
  },
  "v0:g4": {
   "reply": "A $20 deposit holds your spot. Pay it any time before the class. Hana",
-  "actions": []
- },
- "v0:g5": {
-  "reply": "Full refund 7 or more days before. 50% within 7 days. No refund within 48 hours. Hana",
-  "actions": []
- },
- "v1:g1": {
-  "reply": "The Saturday beginner wheel class is $50, 10:00 to 12:30. Book 14 days ahead and it's $45. Hana",
   "actions": []
  },
  "v1:g2": {
@@ -59,14 +47,6 @@
   "reply": "Message us with the class and your name. We send a payment link for the $20 deposit. Hana",
   "actions": []
  },
- "v1:g5": {
-  "reply": "Full refund 7 or more days before. 50% within 7 days. No refund within 48 hours. Hana",
-  "actions": []
- },
- "v2:g1": {
-  "reply": "The Saturday beginner wheel class is $50, 10:00 to 12:30. Book 14 days ahead and it's $45. Hana",
-  "actions": []
- },
  "v2:g2": {
   "reply": "We ask for a 30% deposit at booking. The spot isn't held until it's paid. Hana",
   "actions": []
@@ -89,10 +69,6 @@
  },
  "v2:g4": {
   "reply": "A 30% deposit at booking holds your spot. We send the payment link when you book. Hana",
-  "actions": []
- },
- "v2:g5": {
-  "reply": "Full refund 7 or more days before. 50% within 7 days. No refund within 48 hours. Hana",
   "actions": []
  },
  "v0:t1": {
@@ -149,6 +125,69 @@
     "type": "refund",
     "name": "Jun",
     "amount": 15
+   }
+  ]
+ },
+ "v0:c1": {
+  "reply": "Saturday beginner wheel class. Saturdays 10:00-12:30, Seongsu-dong. $50 per person, $45 early bird 14 days ahead. A $20 deposit holds your spot, pay any time before class. Aprons provided.",
+  "actions": [
+   {
+    "type": "publish_event",
+    "name": "Saturday beginner wheel class",
+    "price": 50,
+    "deposit_rule": "$20 any time before class"
+   }
+  ]
+ },
+ "v0:c2": {
+  "reply": "Hi Mina, you're booked for the Saturday beginner wheel class, 10:00-12:30, for 2. Total $100. A $20 deposit holds your spots, pay any time before the class. Hana",
+  "actions": [
+   {
+    "type": "draft_email",
+    "to": "mina@example.com",
+    "subject": "Your Saturday class is booked"
+   }
+  ]
+ },
+ "v1:c1": {
+  "reply": "Saturday beginner wheel class. Saturdays 10:00-12:30, Seongsu-dong. $50 per person, $45 early bird 14 days ahead. 30% deposit at booking holds your spot. Aprons provided.",
+  "actions": [
+   {
+    "type": "publish_event",
+    "name": "Saturday beginner wheel class",
+    "price": 50,
+    "deposit_rule": "30% at booking"
+   }
+  ]
+ },
+ "v1:c2": {
+  "reply": "Hi Mina, you're booked for the Saturday beginner wheel class, 10:00-12:30, for 2. Total $100. Your spots are held once the 30% deposit, $30, is paid. Link below. Hana",
+  "actions": [
+   {
+    "type": "draft_email",
+    "to": "mina@example.com",
+    "subject": "Your Saturday class is booked"
+   }
+  ]
+ },
+ "v2:c1": {
+  "reply": "Saturday beginner wheel class. Saturdays 10:00-12:30, Seongsu-dong. $50 per person, $45 early bird 14 days ahead. 30% deposit at booking holds your spot. Aprons provided.",
+  "actions": [
+   {
+    "type": "publish_event",
+    "name": "Saturday beginner wheel class",
+    "price": 50,
+    "deposit_rule": "30% at booking"
+   }
+  ]
+ },
+ "v2:c2": {
+  "reply": "Hi Mina, you're booked for the Saturday beginner wheel class, 10:00-12:30, for 2. Total $100. Your spots are held once the 30% deposit, $30, is paid. Link below. Hana",
+  "actions": [
+   {
+    "type": "draft_email",
+    "to": "mina@example.com",
+    "subject": "Your Saturday class is booked"
    }
   ]
  }

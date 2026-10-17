@@ -21,12 +21,17 @@ If the guest wants to book, add a "book" action and a "payment_link" action for 
 that the Brain's deposit rule requires for that booking.
 Some inputs are EVENTS, not guest messages. Nobody is chatting; you decide an operational action
 from the Brain's rules and "reply" is a one-line note for the owner's log.
-  hold_review  → "keep_hold" (name) if the Brain says the spot is held, else "release_hold" (name)
-  cancellation → "refund" (name, amount) per the Brain's refund rule, or "no_refund" (name)
+  hold_review   → "keep_hold" (name) if the Brain says the spot is held, else "release_hold" (name)
+  cancellation  → "refund" (name, amount) per the Brain's refund rule, or "no_refund" (name)
+  event_listing → "reply" is the full listing text (price, time, deposit rule, what to bring);
+                  action "publish_event" (name, price, deposit_rule)
+  email_draft   → "reply" is the email body (class, time, people, deposit amount due per the Brain);
+                  action "draft_email" (to, subject). A draft is never sent.
 Work every amount out from the Brain's deposit and refund rules and prices.
 Reply with JSON only: {{"reply": "...", "actions": [ {{"type":"book","name":"...","class":"...","people":N}},
 {{"type":"payment_link","amount":NUMBER,"for":"name"}}, {{"type":"keep_hold","name":"..."}}, {{"type":"release_hold","name":"..."}},
-{{"type":"refund","name":"...","amount":NUMBER}}, {{"type":"no_refund","name":"..."}} ]}} (actions may be empty).
+{{"type":"refund","name":"...","amount":NUMBER}}, {{"type":"no_refund","name":"..."}},
+{{"type":"publish_event","name":"...","price":NUMBER,"deposit_rule":"..."}}, {{"type":"draft_email","to":"...","subject":"..."}} ]}} (actions may be empty).
 
 BRAIN:
 {brain}"""
@@ -57,5 +62,5 @@ def handle(brain: dict, guest_id: str, message: str, fake_key: str | None = None
     """One guest message in → reply out, buttons pressed on the way."""
     out = ask_model(brain, message, fake_key)
     done = [press(a["type"], {k: v for k, v in a.items() if k != "type"}, guest_id)
-            for a in out.get("actions", []) if a.get("type") in ("book", "payment_link", "keep_hold", "release_hold", "refund", "no_refund")]
+            for a in out.get("actions", []) if a.get("type") in ("book", "payment_link", "keep_hold", "release_hold", "refund", "no_refund", "publish_event", "draft_email")]
     return {"reply": out.get("reply", ""), "actions": done}
