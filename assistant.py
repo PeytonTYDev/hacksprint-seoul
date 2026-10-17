@@ -34,7 +34,15 @@ Reply with JSON only: {{"reply": "...", "actions": [ {{"type":"book","name":"...
 {{"type":"publish_event","name":"...","price":NUMBER,"deposit_rule":"..."}}, {{"type":"draft_email","to":"...","subject":"..."}} ]}} (actions may be empty).
 
 BRAIN:
-{brain}"""
+{brain}
+
+FOUNDER CORRECTIONS (hard rules; always apply; the newest wins over anything above):
+{corrections}"""
+
+def _corrections_block() -> str:
+    import correct
+    rules = correct.recall()
+    return "\n".join(f"- {r['at']}: {r['rule']}" for r in rules) or "- none yet"
 
 def ask_model(brain: dict, message: str, fake_key: str | None = None) -> dict:
     if os.getenv("LLM_FAKE") == "1":
@@ -46,7 +54,8 @@ def ask_model(brain: dict, message: str, fake_key: str | None = None) -> dict:
     r = client.chat.completions.create(
         model=os.getenv("LLM_MODEL", "google/gemini-3.1-flash-lite"),
         messages=[{"role": "system", "content": RULES.format(business=brain["business"],
-                   voice=brain["voice"], brain=json.dumps(brain, indent=1))},
+                   voice=brain["voice"], brain=json.dumps(brain, indent=1),
+                   corrections=_corrections_block())},
                   {"role": "user", "content": message}],
         temperature=0)
     text = r.choices[0].message.content

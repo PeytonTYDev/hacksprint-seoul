@@ -2,3 +2,5 @@
 .env
 __pycache__/
 replay.json
+corrections.jsonl
+ledger.jsonl

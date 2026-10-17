@@ -27,6 +27,19 @@ def propose(brain: dict, feedback: str, fake_key: str | None = None) -> dict:
     m = re.search(r"\{.*\}", r.choices[0].message.content, re.S)
     return json.loads(m.group(0))
 
+MEMORY = "corrections.jsonl"      # the learned corrections; ADR-023 "hard rule, always injected"
+
+def remember(feedback: str, proposal: dict) -> None:
+    """Commit the confirmed correction as a record: who said what, when, and the rule."""
+    import json as _j, time as _t
+    with open(MEMORY, "a") as f:
+        f.write(_j.dumps({"at": _t.strftime("%Y-%m-%d %H:%M"), "founder_said": feedback,
+                          "rule": proposal["summary"], "changes": proposal["changes"]}) + "\n")
+
+def recall() -> list[dict]:
+    import json as _j, os as _o
+    return [_j.loads(l) for l in open(MEMORY)] if _o.path.exists(MEMORY) else []
+
 def apply(brain: dict, changes: list[dict]) -> dict:
     out = json.loads(json.dumps(brain))                   # copy, never edit the original in place
     for c in changes:
