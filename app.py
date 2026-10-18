@@ -40,6 +40,29 @@ h1 { font-size:2rem; } h2 { font-size:1.15rem; margin-top:1.6rem; }
 [data-testid="stTable"] table { color:#F4F4F1; border-color:rgba(255,255,255,0.10); font-family:'Geist', system-ui, sans-serif; }
 [data-testid="stTable"] th { color:rgba(255,255,255,0.55); font-weight:500; text-transform:lowercase; }
 hr { border-color:rgba(255,255,255,0.10); }
+/* ---- MystFlo shell: left rail + masthead, from docs/design/design-artifacts/shell.html ---- */
+header[data-testid="stHeader"] { background:transparent; }
+[data-testid="stSidebar"] { background:#000; border-right:1px solid rgba(255,255,255,0.10); }
+[data-testid="stSidebar"] [data-testid="stSidebarContent"] { padding-top:12px; }
+.brand { display:flex; align-items:center; gap:12px; padding:8px 4px 18px; }
+.brand-mark { width:22px; height:22px; color:#F4F4F1; flex-shrink:0; }
+.wordmark-block { display:flex; flex-direction:column; line-height:1; }
+.wordmark { font-family:Georgia,'Times New Roman',serif; font-size:22px; font-weight:400; letter-spacing:-.015em; color:#F4F4F1; text-shadow:0 0 20px rgba(255,255,255,.18); white-space:nowrap; }
+.wordmark i { font-style:italic; }
+.wordmark-suffix { font-size:9px; letter-spacing:.4em; text-transform:uppercase; color:rgba(255,255,255,0.40); margin-top:5px; margin-left:1px; }
+.badge-proto { font-size:9px; letter-spacing:.06em; text-transform:uppercase; font-weight:500; border-radius:999px; padding:2.5px 8px; white-space:nowrap; background:rgba(234,179,8,.15); border:1px solid rgba(234,179,8,.30); color:#eab308; margin-left:auto; }
+.rail-eyebrow { font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,0.30); padding:12px 12px 6px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:10px; font-size:13px; font-weight:300; letter-spacing:.01em; color:rgba(255,255,255,0.55); min-height:40px; position:relative; }
+.nav-item .ic { width:15px; height:15px; flex-shrink:0; opacity:.8; border:1.2px solid currentColor; border-radius:4px; display:inline-block; }
+.nav-item .ic-round { border-radius:50%; }
+.nav-item.active-quiet { color:#F4F4F1; background:rgba(255,255,255,0.06); font-weight:400; }
+.nav-item.active-quiet::before { content:""; position:absolute; left:-6px; top:8px; bottom:8px; width:2px; border-radius:2px; background:linear-gradient(to bottom, transparent, rgba(255,255,255,.9), transparent); box-shadow:0 0 12px rgba(255,255,255,.35); }
+.eyebrow-page { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,0.40); margin-bottom:10px; font-family:'Geist Mono', monospace; }
+.page-h1 { font-size:26px; font-weight:300; letter-spacing:-.01em; color:#F4F4F1; margin:0 0 6px; }
+.intro { color:rgba(255,255,255,0.55); font-size:13.5px; margin:0 0 8px; }
+.panel { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.10); border-radius:1rem; padding:16px 20px 4px; margin:8px 0 16px; }
+.block-container { padding-top:2.2rem; max-width:1120px; }
+.proto-foot { color:rgba(255,255,255,0.40); font-size:12.5px; font-family:'Geist Mono', monospace; }
 .score { width:100%; border-collapse:collapse; margin:8px 0 12px; font-size:0.95rem; }
 .score th { text-align:left; color:rgba(255,255,255,0.55); font-weight:500; padding:8px 10px; border-bottom:1px solid rgba(255,255,255,0.15); }
 .score td { padding:10px; border-bottom:1px solid rgba(255,255,255,0.08); vertical-align:top; }
@@ -75,17 +98,36 @@ def rehearse(brain, version):
 
 def load_brain(): return json.load(open("brain.json"))
 
-# ---------- header ----------
-st.title("Teach the Brain once")
-st.caption("One Brain agent · six assistants · rehearsed in sealed sandboxes before going live · fake studio, nothing is sent")
+# ---------- MystFlo shell: left rail (the product's nav, Brain lit) ----------
+MARK = ('<svg class="brand-mark" viewBox="0 0 140 148" fill="none" stroke="currentColor">'
+        '<path d="M86 14 C106 32 110 60 86 88 C62 60 66 32 86 14 Z" stroke-width="1.2" stroke-dasharray="1.5 4.5" stroke-linecap="round" opacity=".7"/>'
+        '<path d="M86 88 C86 104 56 102 56 114" stroke-width="1.2" stroke-dasharray="1.5 4.5" stroke-linecap="round" opacity=".7"/>'
+        '<circle cx="86" cy="88" r="2.4" stroke-width="1" opacity=".8"/>'
+        '<path d="M56 24 C76 42 80 70 56 98 C32 70 36 42 56 24 Z" stroke-width="1.3"/>'
+        '<line x1="56" y1="40" x2="56" y2="86" stroke-width=".7" opacity=".45"/>'
+        '<line x1="56" y1="98" x2="56" y2="132" stroke-width="1.3"/>'
+        '<circle cx="56" cy="98" r="3.2" fill="currentColor" stroke="none"/>'
+        '<circle cx="56" cy="114" r="2.4" stroke-width="1"/></svg>')
+def nav(label, active=False, round_=False):
+    return f'<div class="nav-item{" active-quiet" if active else ""}"><span class="ic{" ic-round" if round_ else ""}"></span>{label}</div>'
 
 S.setdefault("step", 1)
 with st.sidebar:
+    st.markdown(f'<div class="brand">{MARK}<span class="wordmark-block"><span class="wordmark"><i>Myst</i>Flo</span>'
+                f'<span class="wordmark-suffix">Platform</span></span><span class="badge-proto">Prototype</span></div>'
+                + nav("Assistants") + nav("Brain", active=True, round_=True) + nav("Pulse") + nav("Team", round_=True) + nav("Connects")
+                + '<div class="rail-eyebrow">Rehearsal</div>', unsafe_allow_html=True)
     S.boxes = st.toggle("Rehearse in Daytona sandboxes", value=S.get("boxes", True), help="Off = run the seven scenarios on this laptop")
     st.caption("One fresh sandbox per assistant, all at once, deleted after. Built at the event.")
+    st.markdown('<p class="proto-foot">Prototype built outside MystFlo for Daytona HackSprint Seoul. This is where it would sit in the product. Fake studio, nothing is sent.</p>', unsafe_allow_html=True)
+
+# ---------- header: the Brain page ----------
+st.markdown('<div class="eyebrow-page">Brain · your double learns from you</div>'
+            '<h1 class="page-h1">Teach the Brain once</h1>'
+            '<p class="intro">One Brain agent · six assistants read the same Brain · rehearsed in sealed sandboxes before going live</p>', unsafe_allow_html=True)
 
 # ---------- 1. a guest asks ----------
-st.header("1 · A guest asks")
+st.header("1 · A guest asks, your double answers")
 g2 = next(x for x in GUESTS if x["id"] == "g2")
 if "first_reply" not in S:
     world = world_start()
@@ -93,11 +135,11 @@ if "first_reply" not in S:
         S.first_reply = assistant.handle(load_brain(), g2["id"], g2["message"], fake_key="v0:g2", who=(g2["assistant"], g2["role"]))["reply"]
     finally:
         world.terminate()
-card(g2["message"], who="guest · 11:42 pm", kind="you")
-card(S.first_reply, who="On-Brand Support · your double", kind="double")
+card(g2["message"], who="guest on WhatsApp · 11:42 pm · from Pulse", kind="you")
+card(S.first_reply, who="On-Brand Support · your double · what it answered", kind="double")
 
 # ---------- 2. she teaches the Brain ----------
-st.header("2 · She teaches the Brain agent")
+st.header("2 · You teach your Brain")
 feedback = st.text_input("Not how you'd say it? Tell the Brain agent, in your words.",
                          value="No. 30% deposit at booking, or the spot isn't held.", key="feedback")
 if st.button("Teach", type="primary") and feedback.strip():
@@ -106,9 +148,9 @@ if st.button("Teach", type="primary") and feedback.strip():
 
 # ---------- 3. the agent proposes, she confirms ----------
 if S.get("proposal"):
-    st.header("3 · The agent proposes · nothing saves until you confirm")
+    st.header("3 · Your Brain proposes · nothing saves until you confirm")
     p = S.proposal
-    card(p["summary"], who="Brain agent · proposed change", kind="needs-you")
+    card(p["summary"], who="Your Brain · proposed change · needs you", kind="needs-you")
     for c in p["changes"]:
         st.markdown(f'<div class="card"><div class="path">{c["path"]}</div><div class="big">{c["new"]}</div></div>', unsafe_allow_html=True)
     col1, col2 = st.columns([1, 5])
@@ -123,6 +165,7 @@ if S.get("proposal"):
 # ---------- 4. rehearsal ----------
 if S.get("saved"):
     st.header("4 · Rehearsal before going live")
+    st.markdown('<div class="eyebrow-page">Pulse · rehearsal · every assistant that reads this Brain</div>', unsafe_allow_html=True)
     st.caption("Every assistant that reads the Brain runs its scenario. Plain code marks each reply and each action. No AI marks itself.")
     if st.button("Rehearse every assistant", type="primary") or S.get("after"):
         if not S.get("after"):
@@ -167,7 +210,7 @@ if S.get("saved"):
                     S.proposal2 = brain_agent.propose(load_brain(), f"Rehearsal failures: {failures}. Original correction: {S.feedback}", fake_key=f"round{S.round}")
                 if S.get("proposal2"):
                     p2 = S.proposal2
-                    card(p2["summary"], who="Brain agent · proposed change", kind="needs-you")
+                    card(p2["summary"], who="Your Brain · proposed change · needs you", kind="needs-you")
                     for c in p2["changes"]:
                         st.markdown(f'<div class="card"><div class="path">{c["path"]}</div><div class="big">{c["new"]}</div></div>', unsafe_allow_html=True)
                     if st.button("Confirm and rehearse again", key="confirm2"):
