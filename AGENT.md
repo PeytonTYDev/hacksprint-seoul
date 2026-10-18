@@ -5,7 +5,7 @@
                                 │
                                 ▼
  ┌──────────────────────────────────────────────────────────────────────────┐
- │ BRAIN AGENT (agent.py + run.py)                                        │
+ │ BRAIN AGENT (brain_agent.py + run.py)                                        │
  │  1 CAPTURE     the reply/action she flagged                              │
  │  2 RECOMMEND   exact field changes, every place the old rule hides        │
  │  3 REVIEW      she confirms / edits / rejects — nothing saves without it  │

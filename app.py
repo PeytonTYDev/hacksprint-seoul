@@ -8,7 +8,7 @@ she confirms → every assistant rehearses (laptop now; --boxes = Daytona this a
 """
 import json, os, subprocess, sys, time
 import streamlit as st
-import assistant, check, agent
+import assistant, check, brain_agent
 
 st.set_page_config(page_title="Teach the Brain once", layout="wide")
 GUESTS = json.load(open("guests.json"))
@@ -92,7 +92,7 @@ st.header("2 · She teaches the Brain agent")
 feedback = st.text_input("Not how you'd say it? Tell the Brain agent, in your words.",
                          value="No. 30% deposit at booking, or the spot isn't held.", key="feedback")
 if st.button("Teach", type="primary") and feedback.strip():
-    S.proposal = agent.propose(load_brain(), feedback, fake_key="round1")
+    S.proposal = brain_agent.propose(load_brain(), feedback, fake_key="round1")
     S.before = None; S.after = None; S.step = 3
 
 # ---------- 3. the agent proposes, she confirms ----------
@@ -106,10 +106,10 @@ if S.get("proposal"):
     if col1.button("Confirm and save", key="confirm") and not S.get("saved"):
         brain = load_brain()
         S.before = rehearse(brain, "v0")
-        brain = agent.apply(brain, p["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
-        agent.remember(S.feedback, p); S.saved = True
+        brain = brain_agent.apply(brain, p["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
+        brain_agent.remember(S.feedback, p); S.saved = True
     if S.get("saved"):
-        col2.markdown(f'<span class="pass">Saved to the Brain.</span> <span class="dim">Correction memory holds {len(agent.recall())} learned correction(s).</span>', unsafe_allow_html=True)
+        col2.markdown(f'<span class="pass">Saved to the Brain.</span> <span class="dim">Correction memory holds {len(brain_agent.recall())} learned correction(s).</span>', unsafe_allow_html=True)
 
 # ---------- 4. rehearsal ----------
 if S.get("saved"):
@@ -151,15 +151,15 @@ if S.get("saved"):
                 failures = "; ".join(f"{g['assistant']} ({g['id']}): {S.after[g['id']][0][1]}" for g in GUESTS if not S.after[g["id"]][0][0])
                 st.subheader(f"5 · The agent proposes again · round {S.round}")
                 if st.button("Ask the agent what else to change"):
-                    S.proposal2 = agent.propose(load_brain(), f"Rehearsal failures: {failures}. Original correction: {S.feedback}", fake_key=f"round{S.round}")
+                    S.proposal2 = brain_agent.propose(load_brain(), f"Rehearsal failures: {failures}. Original correction: {S.feedback}", fake_key=f"round{S.round}")
                 if S.get("proposal2"):
                     p2 = S.proposal2
                     card(p2["summary"], who="Brain agent · proposed change", kind="needs-you")
                     for c in p2["changes"]:
                         st.markdown(f'<div class="card"><div class="path">{c["path"]}</div><div class="big">{c["new"]}</div></div>', unsafe_allow_html=True)
                     if st.button("Confirm and rehearse again", key="confirm2"):
-                        brain = agent.apply(load_brain(), p2["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
-                        agent.remember(S.feedback, p2)
+                        brain = brain_agent.apply(load_brain(), p2["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
+                        brain_agent.remember(S.feedback, p2)
                         with st.spinner("rehearsing again…"):
                             S.before, S.after = S.after, rehearse(brain, f"v{S.round}")
                         S.round += 1; S.proposal2 = None; st.rerun()

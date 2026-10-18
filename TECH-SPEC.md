@@ -6,7 +6,7 @@
  LAPTOP                                          DAYTONA
  ┌────────────────────────────────┐              ┌──────────────────────────────┐
  │ run.py        the loop, UI     │   prepare    │ BASE box                     │
- │ agent.py    feedback→changes │ ───────────► │  files + pip install         │
+ │ brain_agent.py    feedback→changes │ ───────────► │  files + pip install         │
  │ check.py      marks results    │              └──────────────┬───────────────┘
  │ guests.json   7 scenarios      │                     fork ×7 │
  │ brain.json    the Brain        │              ┌──────┬──────┬┴─────┬──────┐
@@ -21,7 +21,7 @@
 | file | runs where | role |
 |---|---|---|
 | `run.py` | laptop | steps 1–5, scoreboard, confirm prompts |
-| `agent.py` | laptop | model turns feedback into `{summary, changes[{path,new}]}`; `apply()` patches a copy |
+| `brain_agent.py` | laptop | model turns feedback into `{summary, changes[{path,new}]}`; `apply()` patches a copy |
 | `check.py` | laptop | pure functions: reply_must / reply_must_not / ledger_must |
 | `rehearse_one.py` | laptop or box | starts the fake world, runs one scenario, prints one JSON line |
 | `assistant.py` | laptop or box | Brain → model → `{reply, actions}`; presses buttons via HTTP |
