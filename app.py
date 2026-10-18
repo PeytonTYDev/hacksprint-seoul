@@ -56,6 +56,12 @@ def world_start():
     p = subprocess.Popen([sys.executable, "world/services.py"]); assistant.wait_for_services(); return p
 
 def rehearse(brain, version):
+    if S.get("boxes"):
+        import box
+        log = []
+        out = box.rehearse_in_boxes(version, log=log.append)
+        S.boxlog = log[-1] if log else ""
+        return {sid: (check.check(next(g for g in GUESTS if g["id"] == sid), r), r) for sid, r in out.items()}
     world = world_start()
     try:
         out = {}
@@ -74,6 +80,9 @@ st.title("Teach the Brain once")
 st.caption("One Brain agent · six assistants · rehearsed in sealed sandboxes before going live · fake studio, nothing is sent")
 
 S.setdefault("step", 1)
+with st.sidebar:
+    S.boxes = st.toggle("Rehearse in Daytona sandboxes", value=S.get("boxes", True), help="Off = run the seven scenarios on this laptop")
+    st.caption("One fresh sandbox per assistant, all at once, deleted after. Built at the event.")
 
 # ---------- 1. a guest asks ----------
 st.header("1 · A guest asks")
@@ -117,7 +126,7 @@ if S.get("saved"):
     st.caption("Every assistant that reads the Brain runs its scenario. Plain code marks each reply and each action. No AI marks itself.")
     if st.button("Rehearse every assistant", type="primary") or S.get("after"):
         if not S.get("after"):
-            with st.spinner("seven assistants rehearsing…"):
+            with st.spinner("seven assistants rehearsing" + (" in seven sandboxes…" if S.get("boxes") else "…")):
                 S.after = rehearse(load_brain(), "v1")
         def did(r):
             """One short line of what the assistant did: actions first, else the reply."""
@@ -133,14 +142,18 @@ if S.get("saved"):
             line = "; ".join(acts) if acts else r["reply"]
             return (line[:110] + "…") if len(line) > 110 else line
         st.markdown('<p class="dim">Before = on the old Brain. After = once she taught it. <span class="fail">wrong</span> = said or did the old thing (quoted $20, kept the unpaid hold). <span class="pass">right</span> = follows the rule she taught. Judged by code against her Brain, not by the AI.</p>', unsafe_allow_html=True)
-        html = ['<table class="score"><tr><th>assistant</th><th>scenario</th><th>before</th><th>after</th><th>what it said or did, after</th></tr>']
+        boxcol = "<th>sandbox</th>" if S.get("boxes") else ""
+        html = [f'<table class="score"><tr><th>assistant</th><th>scenario</th><th>before</th><th>after</th><th>what it said or did, after</th>{boxcol}</tr>']
         for g in GUESTS:
             (okb, _), _ = S.before[g["id"]]; (oka, why), r = S.after[g["id"]]
             b = '<span class="pass">right</span>' if okb else '<span class="fail">wrong</span>'
             a = '<span class="pass">right</span>' if oka else f'<span class="fail">wrong</span> <span class="dim">· {why}</span>'
-            html.append(f'<tr><td><b>{g["assistant"]}</b></td><td>{g.get("message") or g["label"]}</td><td>{b}</td><td>{a}</td><td class="dim">{did(r)}</td></tr>')
+            bx = f'<td class="dim">{r.get("box", "-")} · {r.get("seconds", "")}s</td>' if S.get("boxes") else ""
+            html.append(f'<tr><td><b>{g["assistant"]}</b></td><td>{g.get("message") or g["label"]}</td><td>{b}</td><td>{a}</td><td class="dim">{did(r)}</td>{bx}</tr>')
         html.append("</table>")
         st.markdown("".join(html), unsafe_allow_html=True)
+        if S.get("boxes") and S.get("boxlog"):
+            st.markdown(f'<p class="dim">Daytona: {S.boxlog}</p>', unsafe_allow_html=True)
         passed = sum(1 for g in GUESTS if S.after[g["id"]][0][0])
         if passed == len(GUESTS):
             st.markdown('<div class="ready"><span class="pass">Every assistant is ready.</span> She taught the Brain once. Every assistant followed, proven before going live. Nothing was sent to anyone.</div>', unsafe_allow_html=True)

@@ -9,8 +9,21 @@ model MystFlo's live guest chat uses. LLM_BASE_URL / LLM_MODEL in .env swap it.
 LLM_FAKE=1 answers from fixtures/fake_replies.json (offline rehearsal + backup).
 """
 import json, os, re, urllib.request
-from dotenv import load_dotenv
-load_dotenv()
+try:
+    from dotenv import load_dotenv; load_dotenv()
+except ImportError:                      # inside a box there is no .env and no dotenv; fine
+    pass
+
+def chat(system: str, user: str) -> str:
+    """One chat completion over plain HTTP (OpenAI-compatible: OpenRouter, Nosana/vLLM, ...). No SDK needed."""
+    url = os.getenv("LLM_BASE_URL", "https://openrouter.ai/api/v1").rstrip("/") + "/chat/completions"
+    body = {"model": os.getenv("LLM_MODEL", "google/gemini-3.1-flash-lite"), "temperature": 0,
+            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
+    req = urllib.request.Request(url, data=json.dumps(body).encode(),
+                                 headers={"Content-Type": "application/json",
+                                          "Authorization": "Bearer " + os.getenv("LLM_API_KEY", "")})
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        return json.loads(resp.read())["choices"][0]["message"]["content"]
 
 SERVICES = os.getenv("SERVICES_URL", "http://127.0.0.1:8787")
 
@@ -61,17 +74,9 @@ def ask_model(brain: dict, message: str, fake_key: str | None = None, who: tuple
     if os.getenv("LLM_FAKE") == "1":
         canned = json.load(open("fixtures/fake_replies.json"))
         return canned[fake_key]
-    from openai import OpenAI
-    client = OpenAI(base_url=os.getenv("LLM_BASE_URL", "https://openrouter.ai/api/v1"),
-                    api_key=os.getenv("LLM_API_KEY"))
-    r = client.chat.completions.create(
-        model=os.getenv("LLM_MODEL", "google/gemini-3.1-flash-lite"),
-        messages=[{"role": "system", "content": RULES.format(business=brain["business"], assistant=who[0], role=who[1],
-                   voice=brain["voice"], brain=json.dumps(brain, indent=1),
-                   corrections=_corrections_block())},
-                  {"role": "user", "content": message}],
-        temperature=0)
-    text = r.choices[0].message.content
+    text = chat(RULES.format(business=brain["business"], assistant=who[0], role=who[1],
+                             voice=brain["voice"], brain=json.dumps(brain, indent=1),
+                             corrections=_corrections_block()), message)
     m = re.search(r"\{.*\}", text, re.S)               # pull the JSON out of any wrapper
     return json.loads(m.group(0)) if m else {"reply": text, "actions": []}
 

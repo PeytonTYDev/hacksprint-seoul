@@ -10,7 +10,8 @@ Tonight the rehearsal runs on this laptop. Tomorrow, at the event, --boxes runs
 each guest in its own Daytona clone of one prepared world (see box.py).
 
   LLM_FAKE=1 .venv/bin/python run.py          # offline, canned answers (also the stage backup)
-  .venv/bin/python run.py                     # live model
+  .venv/bin/python run.py                     # live model, rehearsal on this laptop
+  .venv/bin/python run.py --boxes             # live model, each scenario in its own Daytona sandbox
 """
 import json, os, subprocess, sys, time
 from rich.console import Console
@@ -27,7 +28,13 @@ def start_world():
     if os.path.exists("ledger.jsonl"): os.remove("ledger.jsonl")
     p = subprocess.Popen([sys.executable, "world/services.py"]); assistant.wait_for_services(); return p
 
+BOXES = "--boxes" in sys.argv          # built at the event: each scenario in its own Daytona sandbox
+
 def rehearse(brain: dict, version: str) -> dict:
+    if BOXES:
+        import box
+        out = box.rehearse_in_boxes(version, log=lambda m: con.print(f"[dim]{m}[/]"))
+        return {sid: (check.check(next(g for g in GUESTS if g["id"] == sid), r), r) for sid, r in out.items()}
     results = {}
     for g in GUESTS:
         r = assistant.handle(brain, g["id"], g.get("message") or "EVENT (no guest message): " + json.dumps(g["event"]), fake_key=f"{version}:{g['id']}", who=(g["assistant"], g["role"]))
@@ -37,9 +44,12 @@ def rehearse(brain: dict, version: str) -> dict:
 def scoreboard(before: dict, after: dict, title: str):
     t = Table(title=title)
     t.add_column("assistant"); t.add_column("scenario"); t.add_column("before (old Brain)"); t.add_column("after (taught)"); t.add_column("why")
+    if BOXES: t.add_column("sandbox")
     for g in GUESTS:
-        (okb, _), _ = before[g["id"]]; (oka, why), _ = after[g["id"]]
-        t.add_row(g["assistant"], (g.get("message") or g["label"])[:34], "right" if okb else "wrong", "[green]right[/]" if oka else "[red]wrong[/]", "" if oka else why)
+        (okb, _), _ = before[g["id"]]; (oka, why), ra = after[g["id"]]
+        row = [g["assistant"], (g.get("message") or g["label"])[:34], "right" if okb else "wrong", "[green]right[/]" if oka else "[red]wrong[/]", "" if oka else why]
+        if BOXES: row.append(f"{ra.get('box', '-')} · {ra.get('seconds', '')}s")
+        t.add_row(*row)
     con.print(t)
     return sum(1 for g in GUESTS if after[g["id"]][0][0])
 

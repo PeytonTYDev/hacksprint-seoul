@@ -18,13 +18,10 @@ FOUNDER SAID: {feedback}"""
 def propose(brain: dict, feedback: str, fake_key: str | None = None) -> dict:
     if os.getenv("LLM_FAKE") == "1":
         return json.load(open("fixtures/fake_corrections.json"))[fake_key]
-    from openai import OpenAI
-    client = OpenAI(base_url=os.getenv("LLM_BASE_URL", "https://openrouter.ai/api/v1"),
-                    api_key=os.getenv("LLM_API_KEY"))
-    r = client.chat.completions.create(model=os.getenv("LLM_MODEL", "google/gemini-3.1-flash-lite"),
-        messages=[{"role": "user", "content": PROMPT.format(brain=json.dumps(brain, indent=1), feedback=feedback)}],
-        temperature=0)
-    m = re.search(r"\{.*\}", r.choices[0].message.content, re.S)
+    import assistant
+    text = assistant.chat("You turn a founder's correction into exact JSON changes to her Brain.",
+                          PROMPT.format(brain=json.dumps(brain, indent=1), feedback=feedback))
+    m = re.search(r"\{.*\}", text, re.S)
     return json.loads(m.group(0))
 
 MEMORY = "corrections.jsonl"      # the learned corrections; ADR-023 "hard rule, always injected"
