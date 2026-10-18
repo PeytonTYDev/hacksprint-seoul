@@ -72,7 +72,7 @@ def main():
 
         con.rule("[bold]4. Rehearsal before going live")
         after = rehearse(brain, "v1")
-        passed = scoreboard(before, after, "one correction · six assistants · one Brain")
+        passed = scoreboard(before, after, "she taught the Brain once · six assistants followed")
 
         rnd = 2
         while passed < len(GUESTS) and rnd <= 3:
@@ -88,7 +88,7 @@ def main():
 
         con.rule()
         if passed == len(GUESTS):
-            con.print("[bold green]Support is ready.[/] Taught once, confirmed, proven across replies, content and operations. Nothing was sent to anyone.")
+            con.print("[bold green]Support is ready.[/] She taught the Brain once. Every assistant followed, proven before going live. Nothing was sent to anyone.")
         else:
             con.print("[bold red]Not ready.[/] Support stays off until every guest passes.")
     finally:

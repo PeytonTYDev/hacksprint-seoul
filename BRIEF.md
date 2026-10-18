@@ -12,7 +12,7 @@ guest. None lets the founder rehearse it first. In MystFlo today the test run is
 for WhatsApp assistants. That gap is #5519.
 
 ## The idea
-The founder teaches her assistant once, in plain words. Before that teaching goes live,
+The founder teaches the Brain once, in plain words; every assistant reads it live. Before that teaching goes live,
 the assistant rehearses on fake guests and fake operations in cloned sandboxes, and
 plain code checks every reply and every action against her Brain.
 
