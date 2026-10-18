@@ -60,10 +60,10 @@
    "publish_to": "luma"
   },
   "reply_must": [
-   "50",
    [
     "30%",
-    "30 percent"
+    "30 percent",
+    "thirty percent"
    ]
   ],
   "reply_must_not": [
