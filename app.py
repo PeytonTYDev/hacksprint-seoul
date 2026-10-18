@@ -71,7 +71,7 @@ h1.page-h1, [data-testid="stMarkdownContainer"] h1.page-h1 { font-size:26px !imp
 .meta { font-size:11px; color:rgba(255,255,255,0.40); margin:0 0 4px; font-family:'Geist Mono', monospace; }
 [class*="st-key-turn-brain"] { border-left:1.5px dashed rgba(255,255,255,0.35); padding:4px 0 6px 16px; margin:14px 0; }
 [class*="st-key-turn-brain"] .meta::before { content:"◌ "; }
-[class*="st-key-turn-you"] { margin:14px 0 14px 28%; border-right:2px solid #F4F4F1; padding:4px 16px 6px 0; }
+[class*="st-key-turn-you"] { width:72% !important; margin:14px 0 14px auto !important; border-right:2px solid #F4F4F1; padding:4px 16px 6px 0; }
 [class*="st-key-turn-you"] .meta { text-align:right; }
 [class*="st-key-turn-you"] .meta::after { content:" ●"; }
 .big { font-size:1.02rem; line-height:1.5; }
