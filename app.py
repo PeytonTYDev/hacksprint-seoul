@@ -40,6 +40,9 @@ h1 { font-size:2rem; } h2 { font-size:1.15rem; margin-top:1.6rem; }
 [data-testid="stTable"] table { color:#F4F4F1; border-color:rgba(255,255,255,0.10); font-family:'Geist', system-ui, sans-serif; }
 [data-testid="stTable"] th { color:rgba(255,255,255,0.55); font-weight:500; text-transform:lowercase; }
 hr { border-color:rgba(255,255,255,0.10); }
+.score { width:100%; border-collapse:collapse; margin:8px 0 12px; font-size:0.95rem; }
+.score th { text-align:left; color:rgba(255,255,255,0.55); font-weight:500; padding:8px 10px; border-bottom:1px solid rgba(255,255,255,0.15); }
+.score td { padding:10px; border-bottom:1px solid rgba(255,255,255,0.08); vertical-align:top; }
 </style>"""
 st.markdown(CSS, unsafe_allow_html=True)
 
@@ -116,12 +119,28 @@ if S.get("saved"):
         if not S.get("after"):
             with st.spinner("seven assistants rehearsing…"):
                 S.after = rehearse(load_brain(), "v1")
-        rows = []
+        def did(r):
+            """One short line of what the assistant did: actions first, else the reply."""
+            acts = []
+            for a in r["actions"]:
+                t = a["type"]
+                if t == "payment_link": acts.append(f"payment link ${a.get('amount')}")
+                elif t == "book": acts.append(f"booked {a.get('people')} for {a.get('name')}")
+                elif t == "refund": acts.append(f"refund ${a.get('amount')}")
+                elif t == "publish_event": acts.append(f"published at ${a.get('price')} · {a.get('deposit_rule','')}")
+                elif t == "draft_email": acts.append(f"draft to {a.get('to')}")
+                else: acts.append(t.replace("_", " "))
+            line = "; ".join(acts) if acts else r["reply"]
+            return (line[:110] + "…") if len(line) > 110 else line
+        st.markdown('<p class="dim">Before = on the old Brain. After = once she taught it. <span class="fail">wrong</span> = said or did the old thing (quoted $20, kept the unpaid hold). <span class="pass">right</span> = follows the rule she taught. Judged by code against her Brain, not by the AI.</p>', unsafe_allow_html=True)
+        html = ['<table class="score"><tr><th>assistant</th><th>scenario</th><th>before</th><th>after</th><th>what it said or did, after</th></tr>']
         for g in GUESTS:
             (okb, _), _ = S.before[g["id"]]; (oka, why), r = S.after[g["id"]]
-            rows.append({"assistant": g["assistant"], "scenario": g.get("message") or g["label"],
-                         "before": "✓" if okb else "✗", "after": "✓" if oka else "✗", "why": "" if oka else why})
-        st.table(rows)
+            b = '<span class="pass">right</span>' if okb else '<span class="fail">wrong</span>'
+            a = '<span class="pass">right</span>' if oka else f'<span class="fail">wrong</span> <span class="dim">· {why}</span>'
+            html.append(f'<tr><td><b>{g["assistant"]}</b></td><td>{g.get("message") or g["label"]}</td><td>{b}</td><td>{a}</td><td class="dim">{did(r)}</td></tr>')
+        html.append("</table>")
+        st.markdown("".join(html), unsafe_allow_html=True)
         passed = sum(1 for g in GUESTS if S.after[g["id"]][0][0])
         if passed == len(GUESTS):
             st.markdown('<div class="ready"><span class="pass">Every assistant is ready.</span> She taught the Brain once. Every assistant followed, proven before going live. Nothing was sent to anyone.</div>', unsafe_allow_html=True)

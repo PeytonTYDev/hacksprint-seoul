@@ -36,10 +36,10 @@ def rehearse(brain: dict, version: str) -> dict:
 
 def scoreboard(before: dict, after: dict, title: str):
     t = Table(title=title)
-    t.add_column("assistant"); t.add_column("scenario"); t.add_column("before"); t.add_column("after"); t.add_column("why")
+    t.add_column("assistant"); t.add_column("scenario"); t.add_column("before (old Brain)"); t.add_column("after (taught)"); t.add_column("why")
     for g in GUESTS:
         (okb, _), _ = before[g["id"]]; (oka, why), _ = after[g["id"]]
-        t.add_row(g["assistant"], (g.get("message") or g["label"])[:34], "✓" if okb else "✗", "[green]✓[/]" if oka else "[red]✗[/]", "" if oka else why)
+        t.add_row(g["assistant"], (g.get("message") or g["label"])[:34], "right" if okb else "wrong", "[green]right[/]" if oka else "[red]wrong[/]", "" if oka else why)
     con.print(t)
     return sum(1 for g in GUESTS if after[g["id"]][0][0])
 
