@@ -53,3 +53,20 @@ If a row fails after the correction: click "Ask the agent what else to change", 
 - Why not one box? Clean state per scenario, one wait instead of seven, and the sponsor product doing what it was built for.
 - Is it live? Working demos, no paying users. This check is designed, not built. Prototype.
 - Does it learn? It remembers what she taught and confirmed. No weights move. Nothing saves without her tap.
+
+## What she can type at step 2
+Any wording of the same rule: 30% deposit, due at booking (or within a short deadline), spot not held until paid. Keep the percentage at 30 — the seven checks look for it.
+
+Tested live, all seven passed:
+- No. 30% deposit at booking, or the spot isn't held.
+- We take 30 percent when they book. No deposit, no spot.
+- Guests pay a 30% deposit within 24 hours of booking. If it's not paid by then, we release the spot.
+
+Same rule, other phrasings that will work:
+- Deposit is 30% of the class price, paid when you book. I don't hold spots without it.
+- Never say "pay on the day." It's 30% up front at booking, and that's what holds the place.
+- Thirty percent at booking, non-negotiable. Unpaid after a day or two, the spot goes back on sale.
+- A spot is only reserved once the 30% deposit is in. Update everything that still says $20.
+
+Will not pass the checks: a different percentage, a flat amount, no deposit, or a different rule (e.g. "no kids under 12") — the agent proposes fine, but the seven checks measure the 30% deposit rule.
+Judge line: "The checks here are written for this one correction. In the product the expected values come from the Brain itself, so they follow whatever she teaches."
