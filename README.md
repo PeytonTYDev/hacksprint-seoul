@@ -18,3 +18,6 @@ MystFlo today: working demos, no paying users. This check is designed, not built
   (Fork was the plan; this account's sandbox type doesn't support it, so each scenario gets a fresh box.)
 - `--boxes` in `run.py` and the sandbox toggle in `app.py`: the before/after rehearsal runs in Daytona,
   box ids and seconds on the scoreboard. Dropped the `openai` SDK for plain HTTP so boxes need nothing installed.
+- MystFlo shell on the page: the left rail with Brain lit, the wordmark masthead with a Prototype badge, the Brain
+  page eyebrow and title, You / Your Brain thread labels, a Pulse-style rehearsal panel. Taken from the product's
+  design artifacts. The prototype runs outside MystFlo; the shell shows where it would sit.
