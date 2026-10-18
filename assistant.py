@@ -14,7 +14,7 @@ load_dotenv()
 
 SERVICES = os.getenv("SERVICES_URL", "http://127.0.0.1:8787")
 
-RULES = """You are the WhatsApp assistant for {business}. Voice: {voice}.
+RULES = """You are "{assistant}", one of the assistants for {business}. Your job: {role}. Voice: {voice}.
 Answer ONLY from the BRAIN below. If the Brain does not cover it, say you will check with the owner.
 Never invent prices or policies. Keep replies under 60 words.
 If the guest wants to book, add a "book" action and a "payment_link" action for the deposit
@@ -44,7 +44,7 @@ def _corrections_block() -> str:
     rules = correct.recall()
     return "\n".join(f"- {r['at']}: {r['rule']}" for r in rules) or "- none yet"
 
-def ask_model(brain: dict, message: str, fake_key: str | None = None) -> dict:
+def ask_model(brain: dict, message: str, fake_key: str | None = None, who: tuple = ("Support", "helps guests")) -> dict:
     if os.getenv("LLM_FAKE") == "1":
         canned = json.load(open("fixtures/fake_replies.json"))
         return canned[fake_key]
@@ -53,7 +53,7 @@ def ask_model(brain: dict, message: str, fake_key: str | None = None) -> dict:
                     api_key=os.getenv("LLM_API_KEY"))
     r = client.chat.completions.create(
         model=os.getenv("LLM_MODEL", "google/gemini-3.1-flash-lite"),
-        messages=[{"role": "system", "content": RULES.format(business=brain["business"],
+        messages=[{"role": "system", "content": RULES.format(business=brain["business"], assistant=who[0], role=who[1],
                    voice=brain["voice"], brain=json.dumps(brain, indent=1),
                    corrections=_corrections_block())},
                   {"role": "user", "content": message}],
@@ -67,9 +67,9 @@ def press(kind: str, payload: dict, guest: str) -> dict:
                                  headers={"Content-Type": "application/json", "X-Guest": guest})
     return json.loads(urllib.request.urlopen(req, timeout=10).read())
 
-def handle(brain: dict, guest_id: str, message: str, fake_key: str | None = None) -> dict:
-    """One guest message in → reply out, buttons pressed on the way."""
-    out = ask_model(brain, message, fake_key)
+def handle(brain: dict, guest_id: str, message: str, fake_key: str | None = None, who: tuple = ("Support", "helps guests")) -> dict:
+    """One guest message or event in → reply out, buttons pressed on the way."""
+    out = ask_model(brain, message, fake_key, who)
     done = [press(a["type"], {k: v for k, v in a.items() if k != "type"}, guest_id)
             for a in out.get("actions", []) if a.get("type") in ("book", "payment_link", "keep_hold", "release_hold", "refund", "no_refund", "publish_event", "draft_email")]
     return {"reply": out.get("reply", ""), "actions": done}

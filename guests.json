@@ -13,7 +13,9 @@
    "$20",
    "on the day is fine",
    "no problem"
-  ]
+  ],
+  "assistant": "On-Brand Support",
+  "role": "answers guest questions on WhatsApp"
  },
  {
   "id": "g3",
@@ -29,7 +31,9 @@
    "payment_link": {
     "amount": 30
    }
-  }
+  },
+  "assistant": "Direct Booking",
+  "role": "takes the booking and sends the deposit link"
  },
  {
   "id": "g4",
@@ -43,7 +47,9 @@
   ],
   "reply_must_not": [
    "$20"
-  ]
+  ],
+  "assistant": "On-Brand Support",
+  "role": "answers guest questions on WhatsApp"
  },
  {
   "id": "c1",
@@ -67,7 +73,9 @@
    "publish_event": {
     "price": 50
    }
-  }
+  },
+  "assistant": "Listing Writer",
+  "role": "writes event listings for Luma"
  },
  {
   "id": "c2",
@@ -94,7 +102,9 @@
    "draft_email": {
     "to": "mina@example.com"
    }
-  }
+  },
+  "assistant": "Confirmation Mailer",
+  "role": "drafts booking confirmations; never sends"
  },
  {
   "id": "t1",
@@ -115,7 +125,9 @@
    "release_hold": {
     "name": "Mina"
    }
-  }
+  },
+  "assistant": "Deposit Keeper",
+  "role": "keeps or releases unpaid holds"
  },
  {
   "id": "t2",
@@ -136,6 +148,8 @@
    "refund": {
     "amount": 15
    }
-  }
+  },
+  "assistant": "Refund Handler",
+  "role": "applies the refund rule on cancellations"
  }
 ]

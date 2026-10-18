@@ -30,16 +30,16 @@ def start_world():
 def rehearse(brain: dict, version: str) -> dict:
     results = {}
     for g in GUESTS:
-        r = assistant.handle(brain, g["id"], g.get("message") or "EVENT (no guest message): " + json.dumps(g["event"]), fake_key=f"{version}:{g['id']}")
+        r = assistant.handle(brain, g["id"], g.get("message") or "EVENT (no guest message): " + json.dumps(g["event"]), fake_key=f"{version}:{g['id']}", who=(g["assistant"], g["role"]))
         results[g["id"]] = (check.check(g, r), r)
     return results
 
 def scoreboard(before: dict, after: dict, title: str):
     t = Table(title=title)
-    t.add_column("guest"); t.add_column("asks"); t.add_column("before"); t.add_column("after"); t.add_column("why")
+    t.add_column("assistant"); t.add_column("scenario"); t.add_column("before"); t.add_column("after"); t.add_column("why")
     for g in GUESTS:
         (okb, _), _ = before[g["id"]]; (oka, why), _ = after[g["id"]]
-        t.add_row(g["id"], (g.get("message") or g["label"])[:38], "✓" if okb else "✗", "[green]✓[/]" if oka else "[red]✗[/]", "" if oka else why)
+        t.add_row(g["assistant"], (g.get("message") or g["label"])[:34], "✓" if okb else "✗", "[green]✓[/]" if oka else "[red]✗[/]", "" if oka else why)
     con.print(t)
     return sum(1 for g in GUESTS if after[g["id"]][0][0])
 
@@ -55,7 +55,7 @@ def main():
         brain = json.load(open("brain.json"))
         con.rule("[bold]1. A guest asks")
         g2 = next(x for x in GUESTS if x["id"] == "g2")
-        r = assistant.handle(brain, g2["id"], g2["message"], fake_key="v0:g2")
+        r = assistant.handle(brain, g2["id"], g2["message"], fake_key="v0:g2", who=(g2["assistant"], g2["role"]))
         con.print(f"[cyan]guest:[/] {g2['message']}\n[magenta]assistant:[/] {r['reply']}")
 
         con.rule("[bold]2. The founder corrects it")
@@ -72,7 +72,7 @@ def main():
 
         con.rule("[bold]4. Rehearsal before going live")
         after = rehearse(brain, "v1")
-        passed = scoreboard(before, after, "3 replies · 2 content · 2 operations, before vs after")
+        passed = scoreboard(before, after, "one correction · six assistants · one Brain")
 
         rnd = 2
         while passed < len(GUESTS) and rnd <= 3:

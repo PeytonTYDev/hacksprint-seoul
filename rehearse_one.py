@@ -18,7 +18,7 @@ def main(scenario_id: str, version: str = "v1"):
         brain = json.load(open("brain.json"))
         g = next(x for x in json.load(open("guests.json")) if x["id"] == scenario_id)
         text = g.get("message") or "EVENT (no guest message): " + json.dumps(g["event"])
-        r = assistant.handle(brain, g["id"], text, fake_key=f"{version}:{g['id']}")
+        r = assistant.handle(brain, g["id"], text, fake_key=f"{version}:{g['id']}", who=(g["assistant"], g["role"]))
         print(json.dumps({"id": g["id"], **r}))
     finally:
         world.terminate()
