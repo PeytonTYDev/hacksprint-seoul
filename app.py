@@ -187,8 +187,6 @@ with st.sidebar:
        + '<div class="rail-eyebrow">Rehearsal</div>')
     S.boxes = st.toggle("Rehearse in Daytona sandboxes", value=S.get("boxes", True), help="Off = run the seven scenarios on this laptop")
     st.caption("One fresh sandbox per assistant, all at once, deleted after.")
-    S.force_miss = st.toggle("Demo the fix loop (switch on before Teach)", value=S.get("force_miss", False),
-                             help="Demo only. Your Brain's first proposal lands only in the FAQ and nothing is remembered yet, so the rehearsal catches it and the loop runs a second round.")
     md('<div class="rail-eyebrow">Engine</div><p class="proto-foot" style="margin-top:0">' + ENGINE + ' · swap with LLM_BASE_URL / LLM_MODEL</p>')
     md('<p class="proto-foot">Prototype for Daytona HackSprint Seoul, drawn as the product\'s Brain page. Fake studio, nothing is sent.</p>')
 
@@ -199,7 +197,6 @@ with left:
     md('<h1 class="page-h1">Brain</h1><p class="intro">The Brain holds how you run your business — every assistant reads it.</p>')
     state = "every assistant ready" if all_right else "waiting on you ↓"
     chips = [("Support flagged a reply", True), ("You taught", stage >= 2), ("Confirmed · v2", stage >= 3), ("Rehearsed · 7 assistants", stage >= 4)]
-    if S.get("force_miss"): chips.append(("forced miss · demo", False))
     md('<div class="pinned"><div class="lab"><span>Building your Brain</span><b>● ' + state + '</b></div><div class="chips">'
        + "".join(f'<span class="chip{" on" if on else ""}">{t}</span>' for t, on in chips) + '</div></div>')
 
@@ -220,15 +217,11 @@ with left:
 
     # composer (until taught)
     if not S.get("proposal"):
-        feedback = st.text_input("Tell your Brain anything — a rule, a price, how you\'d say it",
+        feedback = st.text_input("Tell your Brain anything — a rule, a price, how you\'d say it. Try the full rule, or just \"Deposit is 30%.\" and watch the rehearsal catch what you left out",
                                  value="No. 30% deposit at booking, or the spot isn't held.", key="feedback")
         if st.button("Teach", type="primary") and feedback.strip():
             S.taught = feedback.strip(); S.t1 = now()
             S.proposal = brain_agent.propose(load_brain(), feedback, fake_key="round1"); S.t2 = now()
-            if S.get("force_miss"):            # demo of the loop: the change lands only in the FAQ, nothing remembered yet
-                faq_only = [c for c in S.proposal["changes"] if c["path"].startswith("faq")]
-                S.proposal["changes"] = faq_only or S.proposal["changes"][:1]
-                S.proposal["summary"] += " (demo: changed only the FAQ on purpose, so the rehearsal can catch it)"
             S.before = None; S.after = None
             logit("You taught: " + S.taught[:48]); logit(f"Your Brain proposed {len(S.proposal['changes'])} changes")
             st.rerun()
@@ -248,7 +241,7 @@ with left:
                     with st.spinner("recording how every assistant behaves on the old Brain…"):
                         S.before = rehearse(brain, "v0")
                     brain = brain_agent.apply(brain, p["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
-                    if not S.get("force_miss"): brain_agent.remember(S.taught, p)
+                    brain_agent.remember(S.taught, p)
                     S.saved = True; S.t3 = now()
                     logit("Confirmed · saved as v2 · 1 correction remembered"); st.rerun()
                 c2.markdown('<p class="note" style="margin-top:8px">Nothing is saved until you confirm.</p>', unsafe_allow_html=True)
