@@ -1,6 +1,22 @@
 # Demo runbook — Teach the Brain once
 
-## Before you present, once
+## Terminal version, with the manual triggers
+You type at two prompts; everything else prints by itself.
+1. `cd ~/gitrepo/hacksprint-seoul && ./reset.sh`
+2. `doppler run -- .venv/bin/python run.py`
+3. Step 1 prints by itself: the guest's question and Support's wrong reply.
+4. Step 2 asks `Founder:` — type your correction, Enter (empty line = the default).
+5. Step 3 shows the proposal and asks `Save this to the Brain? [y/n]` — type `y` (anything else aborts).
+6. Step 4 runs by itself: seven before, seven after, the table.
+7. A row still failing → second proposal, same `[y/n]` → `y`, rerun.
+8. Ends with "Every assistant is ready." Between runs: `./reset.sh`.
+
+Offline: `./reset.sh && LLM_FAKE=1 doppler run -- .venv/bin/python run.py`
+One scenario, what a clone runs: `doppler run -- .venv/bin/python rehearse_one.py g3 v1 && cat ledger.jsonl`
+
+## Web page version (the stage)
+
+### Before you present, once
 1. Terminal: `cd ~/gitrepo/hacksprint-seoul && ./reset.sh`
 2. Start the page: `doppler run -- .venv/bin/streamlit run app.py` (a browser tab opens; leave the terminal running)
 3. Second tab: Daytona dashboard, logged in, sandboxes list visible
