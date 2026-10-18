@@ -1,4 +1,4 @@
-# Get Support ready — product brief
+# Teach the Brain once — product brief
 
 Daytona HackSprint Seoul, 2026-10-18. Solo. Prototype of MystFlo issue #5519 + ADR-023.
 

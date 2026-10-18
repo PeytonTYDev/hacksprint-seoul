@@ -1,4 +1,4 @@
-# PRD — Get Support ready (correction loop + rehearsal)
+# PRD — Teach the Brain once (correction loop + multi-assistant rehearsal)
 
 Hackathon prototype of MystFlo #5519 ("Get Support ready" dress rehearsal) and ADR-023
 (Correction Memory). Scope here is the prototype; the production spec lives in the

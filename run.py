@@ -88,7 +88,7 @@ def main():
 
         con.rule()
         if passed == len(GUESTS):
-            con.print("[bold green]Support is ready.[/] She taught the Brain once. Every assistant followed, proven before going live. Nothing was sent to anyone.")
+            con.print("[bold green]Every assistant is ready.[/] She taught the Brain once. Every assistant followed, proven before going live. Nothing was sent to anyone.")
         else:
             con.print("[bold red]Not ready.[/] Support stays off until every guest passes.")
     finally:
