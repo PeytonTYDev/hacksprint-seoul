@@ -6,7 +6,7 @@
   4. rehearsal: every guest again, before vs after; plain code marks each
   5. anything still wrong → the agent proposes again → confirm → rerun
 
-Tonight the rehearsal runs on this laptop. Tomorrow, at the event, --boxes runs
+Without --boxes the rehearsal runs on this laptop. With --boxes it runs
 each guest in its own Daytona clone of one prepared world (see box.py).
 
   LLM_FAKE=1 .venv/bin/python run.py          # offline, canned answers (also the stage backup)
@@ -24,7 +24,7 @@ con = Console()
 GUESTS = json.load(open("guests.json"))
 
 def start_world():
-    """The fake payment service + calendar, on this laptop for tonight."""
+    """The fake payment service + calendar, on this laptop."""
     if os.path.exists("ledger.jsonl"): os.remove("ledger.jsonl")
     p = subprocess.Popen([sys.executable, "world/services.py"]); assistant.wait_for_services(); return p
 

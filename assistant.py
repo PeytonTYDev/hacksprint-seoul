@@ -5,7 +5,7 @@ answers in the founder's voice and DECIDES actions; this code presses the button
 (fake payment service + fake calendar). The model never touches a service itself.
 
 Model: by default google/gemini-3.1-flash-lite through OpenRouter, the same
-model MystFlo's live guest chat uses. LLM_BASE_URL / LLM_MODEL in .env swap it.
+LLM_BASE_URL / LLM_MODEL swap the engine (any OpenAI-compatible endpoint, e.g. a Nosana vLLM job).
 LLM_FAKE=1 answers from fixtures/fake_replies.json (offline rehearsal + backup).
 """
 import json, os, re, urllib.request

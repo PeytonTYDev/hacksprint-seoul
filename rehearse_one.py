@@ -1,4 +1,4 @@
-"""Run ONE scenario, anywhere: on this laptop tonight, inside a Daytona clone tomorrow.
+"""Run ONE scenario, anywhere: on this laptop, or inside a Daytona sandbox.
 
 Starts the fake world, hands the scenario to the assistant, prints one JSON line:
   {"id": ..., "reply": ..., "actions": [...]}

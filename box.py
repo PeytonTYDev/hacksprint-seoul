@@ -7,8 +7,7 @@ One prepared world, forked once per scenario, run in parallel, judged on the lap
                         collect one JSON line each, delete; returns {id: {"reply","actions","box","seconds"}}
   (fork was the plan; this account's sandbox type doesn't support it, so each scenario gets a fresh box)
 
-The model key goes into each clone as an environment variable for the run (hackathon-acceptable;
-in the product the rehearsal runs in the backend and no key leaves it).
+The model key goes into each box as an environment variable for the run and dies with the box.
 """
 import json, os, time
 from concurrent.futures import ThreadPoolExecutor

@@ -2,7 +2,7 @@
 
 The founder speaks plainly ("No. 30% at booking or the spot isn't held").
 The model turns that into exact field changes. She confirms; only then it's saved.
-This is the prototype of MystFlo's correction memory (ADR-023, proposed)."""
+The correction memory: every learned correction is injected into every assistant's prompt as a hard rule."""
 import json, os, re
 
 PROMPT = """A founder corrected her assistant. Turn the correction into exact changes to her BRAIN (JSON).
@@ -24,7 +24,7 @@ def propose(brain: dict, feedback: str, fake_key: str | None = None) -> dict:
     m = re.search(r"\{.*\}", text, re.S)
     return json.loads(m.group(0))
 
-MEMORY = "corrections.jsonl"      # the learned corrections; ADR-023 "hard rule, always injected"
+MEMORY = "corrections.jsonl"      # the learned corrections: hard rules, always injected, newest wins
 
 def remember(feedback: str, proposal: dict) -> None:
     """Commit the confirmed correction as a record: who said what, when, and the rule."""
