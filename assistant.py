@@ -22,7 +22,7 @@ def chat(system: str, user: str) -> str:
     req = urllib.request.Request(url, data=json.dumps(body).encode(),
                                  headers={"Content-Type": "application/json",
                                           "Authorization": "Bearer " + os.getenv("LLM_API_KEY", "")})
-    with urllib.request.urlopen(req, timeout=60) as resp:
+    with urllib.request.urlopen(req, timeout=float(os.getenv("LLM_TIMEOUT", "60"))) as resp:   # a GPU model that thinks first needs longer
         return json.loads(resp.read())["choices"][0]["message"]["content"]
 
 SERVICES = os.getenv("SERVICES_URL", "http://127.0.0.1:8787")
