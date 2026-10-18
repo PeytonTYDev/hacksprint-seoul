@@ -3,7 +3,7 @@
 Daytona HackSprint Seoul, 2026-10-18. Solo. Prototype of MystFlo issue #5519 + ADR-023.
 
 ## The problem
-A workshop host with traction is her own operations manager. Prices, deposit rules,
+A creative or independent founder with traction is her own operations manager. Prices, deposit rules,
 refund rules, voice: all in her head, retyped in five places. When she gives that to an
 AI assistant, two things go wrong. The assistant is too generous (a model defaults to
 pleasing whoever is in front of it), and nobody checks what it will say or do before a
