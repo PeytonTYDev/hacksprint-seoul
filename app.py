@@ -187,7 +187,7 @@ with st.sidebar:
        + '<div class="rail-eyebrow">Rehearsal</div>')
     S.boxes = st.toggle("Rehearse in Daytona sandboxes", value=S.get("boxes", True), help="Off = run the seven scenarios on this laptop")
     st.caption("One fresh sandbox per assistant, all at once, deleted after.")
-    S.force_miss = st.toggle("Show the fix loop: first pass changes only the FAQ", value=S.get("force_miss", False),
+    S.force_miss = st.toggle("Demo the fix loop (switch on before Teach)", value=S.get("force_miss", False),
                              help="Demo only. Your Brain's first proposal lands only in the FAQ and nothing is remembered yet, so the rehearsal catches it and the loop runs a second round.")
     md('<div class="rail-eyebrow">Engine</div><p class="proto-foot" style="margin-top:0">' + ENGINE + ' · swap with LLM_BASE_URL / LLM_MODEL</p>')
     md('<p class="proto-foot">Prototype for Daytona HackSprint Seoul, drawn as the product\'s Brain page. Fake studio, nothing is sent.</p>')
@@ -287,7 +287,7 @@ with left:
                     S.setdefault("round", 2)
                     if S.round <= 3:
                         failures = "; ".join(f"{g['assistant']} ({g['id']}): {S.after[g['id']][0][1]}" for g in GUESTS if not S.after[g["id"]][0][0])
-                        if st.button("Ask your Brain what else to change"):
+                        if st.button("Fix it · ask your Brain", type="primary"):
                             S.proposal2 = brain_agent.propose(load_brain(), f"Rehearsal failures: {failures}. Original correction: {S.taught}", fake_key=f"round{S.round}")
                         if S.get("proposal2"):
                             p2 = S.proposal2
@@ -318,7 +318,7 @@ with right:
     nxt = {1: ("Teach your Brain", "the deposit reply above isn't how you'd say it"),
            2: ("Confirm the change", "nothing is saved until you do"),
            3: ("Rehearse every assistant", "before anything goes live"),
-           4: ("Ready to go live", "every assistant passed") if all_right else ("Ask your Brain what else to change", "a rehearsal row came back wrong; it reads the judge's reason and proposes again")}[stage]
+           4: ("Ready to go live", "every assistant passed") if all_right else ("Fix it", "a rehearsal row came back wrong; your Brain reads the judge's reason and proposes again")}[stage]
     md('<div class="rc-eyebrow">Next up</div>' + f'<div class="rc-next">{nxt[0]}<small>{nxt[1]}</small></div>')
     if stage == 3 and S.get("boxes"):
         md('<div class="rc-eyebrow">Your Brain is on it</div><div class="rc-sub" style="margin-top:0">Seven Daytona sandboxes, one per assistant, deleted after.</div>')
