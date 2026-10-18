@@ -14,6 +14,19 @@ load_dotenv()
 
 SERVICES = os.getenv("SERVICES_URL", "http://127.0.0.1:8787")
 
+def wait_for_services(timeout: float = 10.0) -> None:
+    """Block until the fake world answers on its port (a fixed sleep raced on slow starts)."""
+    import socket, time
+    host, port = SERVICES.split("//")[1].split(":"); port = int(port)
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        try:
+            with socket.create_connection((host, port), timeout=0.5):
+                return
+        except OSError:
+            time.sleep(0.1)
+    raise RuntimeError("fake world did not start on " + SERVICES)
+
 RULES = """You are "{assistant}", one of the assistants for {business}. Your job: {role}. Voice: {voice}.
 Answer ONLY from the BRAIN below. If the Brain does not cover it, say you will check with the owner.
 Never invent prices or policies. Keep replies under 60 words.

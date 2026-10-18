@@ -32,7 +32,7 @@ def card(body, who=None, gold=False):
 
 def world_start():
     if os.path.exists("ledger.jsonl"): os.remove("ledger.jsonl")
-    p = subprocess.Popen([sys.executable, "world/services.py"]); time.sleep(0.5); return p
+    p = subprocess.Popen([sys.executable, "world/services.py"]); assistant.wait_for_services(); return p
 
 def rehearse(brain, version):
     world = world_start()

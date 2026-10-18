@@ -25,7 +25,7 @@ GUESTS = json.load(open("guests.json"))
 def start_world():
     """The fake payment service + calendar, on this laptop for tonight."""
     if os.path.exists("ledger.jsonl"): os.remove("ledger.jsonl")
-    p = subprocess.Popen([sys.executable, "world/services.py"]); time.sleep(0.5); return p
+    p = subprocess.Popen([sys.executable, "world/services.py"]); assistant.wait_for_services(); return p
 
 def rehearse(brain: dict, version: str) -> dict:
     results = {}

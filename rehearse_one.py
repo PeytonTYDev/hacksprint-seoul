@@ -12,9 +12,10 @@ import json, os, subprocess, sys, time
 
 def main(scenario_id: str, version: str = "v1"):
     if os.path.exists("ledger.jsonl"): os.remove("ledger.jsonl")
-    world = subprocess.Popen([sys.executable, "world/services.py"]); time.sleep(0.5)
+    world = subprocess.Popen([sys.executable, "world/services.py"])
     try:
         import assistant
+        assistant.wait_for_services()
         brain = json.load(open("brain.json"))
         g = next(x for x in json.load(open("guests.json")) if x["id"] == scenario_id)
         text = g.get("message") or "EVENT (no guest message): " + json.dumps(g["event"])
