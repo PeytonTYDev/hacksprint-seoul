@@ -16,7 +16,7 @@ import json, os, subprocess, sys, time
 from rich.console import Console
 from rich.table import Table
 from dotenv import load_dotenv
-import assistant, check, correct
+import assistant, check, agent
 
 load_dotenv()
 con = Console()
@@ -63,12 +63,12 @@ def main():
         con.print(f"[yellow]founder:[/] {feedback}")
 
         con.rule("[bold]3. Proposed Brain change")
-        proposal = correct.propose(brain, feedback, fake_key="round1")
+        proposal = agent.propose(brain, feedback, fake_key="round1")
         if not confirm(proposal): con.print("Not saved. Nothing changes."); return
         before = rehearse(brain, "v0")
-        brain = correct.apply(brain, proposal["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
-        correct.remember(feedback, proposal)
-        con.print(f"[green]Saved to the Brain.[/] Correction memory now holds {len(correct.recall())} learned correction(s).")
+        brain = agent.apply(brain, proposal["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
+        agent.remember(feedback, proposal)
+        con.print(f"[green]Saved to the Brain.[/] Correction memory now holds {len(agent.recall())} learned correction(s).")
 
         con.rule("[bold]4. Rehearsal before going live")
         after = rehearse(brain, "v1")
@@ -78,10 +78,10 @@ def main():
         while passed < len(GUESTS) and rnd <= 3:
             con.rule(f"[bold]5. Still wrong somewhere, round {rnd}")
             failures = "; ".join(f"{g['id']}: {after[g['id']][0][1]}" for g in GUESTS if not after[g["id"]][0][0])
-            proposal = correct.propose(brain, f"Rehearsal failures: {failures}. Original correction: {feedback}", fake_key=f"round{rnd}")
+            proposal = agent.propose(brain, f"Rehearsal failures: {failures}. Original correction: {feedback}", fake_key=f"round{rnd}")
             if not confirm(proposal): break
-            brain = correct.apply(brain, proposal["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
-            correct.remember(feedback, proposal)
+            brain = agent.apply(brain, proposal["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
+            agent.remember(feedback, proposal)
             before, after = after, rehearse(brain, f"v{rnd}")
             passed = scoreboard(before, after, f"rerun, round {rnd}")
             rnd += 1

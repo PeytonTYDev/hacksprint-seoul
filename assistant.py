@@ -53,8 +53,8 @@ FOUNDER CORRECTIONS (hard rules; always apply; the newest wins over anything abo
 {corrections}"""
 
 def _corrections_block() -> str:
-    import correct
-    rules = correct.recall()
+    import agent
+    rules = agent.recall()
     return "\n".join(f"- {r['at']}: {r['rule']}" for r in rules) or "- none yet"
 
 def ask_model(brain: dict, message: str, fake_key: str | None = None, who: tuple = ("Support", "helps guests")) -> dict:

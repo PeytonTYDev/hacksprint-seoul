@@ -74,7 +74,7 @@ Never: learns by itself · every cycle · the Brain learned · COO · live · sa
 | prototype | MystFlo |
 |---|---|
 | `brain.json` | `brain_profile` + "Save a copy" export |
-| `correct.py` | ADR-023 correction memory (proposed) + Brain agent "clarify, then confirm" |
+| `agent.py` | ADR-023 correction memory (proposed) + Brain agent "clarify, then confirm" |
 | rehearsal + checker | #5519 steps 1–5; "answer like live chat" shared block (not built) |
 | fake services | stubs of the Connects (Stripe link, calendar, Luma, email) |
 | Daytona clones | optional later; production check runs in the backend first (architect ruling 2026-10-17) |

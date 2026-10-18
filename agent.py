@@ -1,4 +1,4 @@
-"""Founder feedback → a proposed Brain correction, shown before anything is saved.
+"""The Brain agent's correction capability: founder feedback → proposed Brain changes, shown before anything is saved; confirmed corrections are remembered.
 
 The founder speaks plainly ("No. 30% at booking or the spot isn't held").
 The model turns that into exact field changes. She confirms; only then it's saved.
