@@ -16,19 +16,37 @@ S = st.session_state
 
 CSS = """
 <style>
-.stApp { background:#0B0B0C; color:#F4F4F1; }
-h1,h2,h3 { color:#F4F4F1 !important; }
-.card { background:#1A1A1D; border:1px solid #2C2C30; border-radius:14px; padding:18px 22px; margin:8px 0; }
-.card.gold { border-color:#D4AF6D; }
-.who { color:#A8A8A3; font-size:0.85rem; letter-spacing:.06em; text-transform:uppercase; }
-.pass { color:#34C07C; font-weight:600; } .fail { color:#E25555; font-weight:600; } .dim { color:#A8A8A3; }
-.big { font-size:1.35rem; }
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;600&display=swap');
+html, body, .stApp, [data-testid="stAppViewContainer"] { background:#000; color:#F4F4F1; font-family:'Geist', -apple-system, system-ui, sans-serif; }
+h1, h2, h3 { color:#F4F4F1 !important; font-family:'Geist', system-ui, sans-serif; font-weight:600; letter-spacing:-0.01em; }
+h1 { font-size:2rem; } h2 { font-size:1.15rem; margin-top:1.6rem; }
+[data-testid="stCaptionContainer"], .dim { color:rgba(255,255,255,0.55); }
+.card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.10); border-radius:0.75rem; padding:16px 20px; margin:8px 0; }
+.card.you { border-left:2px solid #F4F4F1; }
+.card.double { border-style:dashed; border-color:rgba(255,255,255,0.30); }
+.card.needs-you { border-color:#D4AF6D; }
+.who { color:rgba(255,255,255,0.55); font-size:0.78rem; letter-spacing:.06em; text-transform:uppercase; margin-bottom:6px; font-family:'Geist Mono', monospace; }
+.big { font-size:1.1rem; line-height:1.5; }
+.path { font-family:'Geist Mono', monospace; font-size:0.8rem; color:rgba(255,255,255,0.55); }
+.pass { color:#34C07C; font-weight:600; } .fail { color:#E25555; font-weight:600; }
+.ready { background:rgba(52,192,124,0.08); border:1px solid #34C07C; border-radius:0.75rem; padding:16px 20px; font-size:1.1rem; }
+.notready { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.15); border-radius:0.75rem; padding:16px 20px; font-size:1.1rem; }
+.stButton > button { height:36px; padding:0 14px; border-radius:0.75rem; font-family:'Geist', system-ui, sans-serif; font-weight:500; }
+.stButton > button[kind="primary"] { background:#F4F4F1; color:#000; border:1px solid #F4F4F1; }
+.stButton > button[kind="primary"]:hover { background:#fff; color:#000; }
+.stButton > button[kind="secondary"] { background:rgba(255,255,255,0.04); color:#F4F4F1; border:1px solid rgba(255,255,255,0.15); }
+.st-key-confirm button, .st-key-confirm2 button { background:transparent !important; color:#D4AF6D !important; border:1px solid #D4AF6D !important; }
+[data-testid="stTextInput"] input { background:rgba(255,255,255,0.04); color:#F4F4F1; border:1px solid rgba(255,255,255,0.15); border-radius:0.75rem; font-family:'Geist', system-ui, sans-serif; }
+[data-testid="stTable"] table { color:#F4F4F1; border-color:rgba(255,255,255,0.10); font-family:'Geist', system-ui, sans-serif; }
+[data-testid="stTable"] th { color:rgba(255,255,255,0.55); font-weight:500; text-transform:lowercase; }
+hr { border-color:rgba(255,255,255,0.10); }
 </style>"""
 st.markdown(CSS, unsafe_allow_html=True)
 
-def card(body, who=None, gold=False):
+def card(body, who=None, kind=""):
+    """kind: 'you' (founder, solid edge) · 'double' (assistant, dotted edge) · 'needs-you' (lantern, one per view)"""
     w = f'<div class="who">{who}</div>' if who else ""
-    st.markdown(f'<div class="card{" gold" if gold else ""}">{w}<div class="big">{body}</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="card {kind}">{w}<div class="big">{body}</div></div>', unsafe_allow_html=True)
 
 def world_start():
     if os.path.exists("ledger.jsonl"): os.remove("ledger.jsonl")
@@ -63,8 +81,8 @@ if "first_reply" not in S:
         S.first_reply = assistant.handle(load_brain(), g2["id"], g2["message"], fake_key="v0:g2", who=(g2["assistant"], g2["role"]))["reply"]
     finally:
         world.terminate()
-card(g2["message"], who="guest · 11:42 pm")
-card(S.first_reply, who="On-Brand Support · reads the Brain")
+card(g2["message"], who="guest · 11:42 pm", kind="you")
+card(S.first_reply, who="On-Brand Support · your double", kind="double")
 
 # ---------- 2. she teaches the Brain ----------
 st.header("2 · She teaches the Brain agent")
@@ -78,11 +96,11 @@ if st.button("Teach", type="primary") and feedback.strip():
 if S.get("proposal"):
     st.header("3 · The agent proposes · nothing saves until you confirm")
     p = S.proposal
-    card(p["summary"], who="Brain agent", gold=True)
+    card(p["summary"], who="Brain agent · proposed change", kind="needs-you")
     for c in p["changes"]:
-        st.markdown(f'<div class="card"><div class="who">{c["path"]}</div>{c["new"]}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="card"><div class="path">{c["path"]}</div><div class="big">{c["new"]}</div></div>', unsafe_allow_html=True)
     col1, col2 = st.columns([1, 5])
-    if col1.button("Confirm and save") and not S.get("saved"):
+    if col1.button("Confirm and save", key="confirm") and not S.get("saved"):
         brain = load_brain()
         S.before = rehearse(brain, "v0")
         brain = correct.apply(brain, p["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
@@ -106,9 +124,9 @@ if S.get("saved"):
         st.table(rows)
         passed = sum(1 for g in GUESTS if S.after[g["id"]][0][0])
         if passed == len(GUESTS):
-            st.success("Every assistant is ready. She taught the Brain once. Every assistant followed, proven before going live. Nothing was sent to anyone.")
+            st.markdown('<div class="ready"><span class="pass">Every assistant is ready.</span> She taught the Brain once. Every assistant followed, proven before going live. Nothing was sent to anyone.</div>', unsafe_allow_html=True)
         else:
-            st.error(f"Not ready: {len(GUESTS) - passed} still wrong. Nothing goes live until every assistant passes.")
+            st.markdown(f'<div class="notready"><span class="fail">Not ready.</span> {len(GUESTS) - passed} still wrong. Nothing goes live until every assistant passes.</div>', unsafe_allow_html=True)
             S.setdefault("round", 2)
             if S.round <= 3:
                 failures = "; ".join(f"{g['assistant']} ({g['id']}): {S.after[g['id']][0][1]}" for g in GUESTS if not S.after[g["id"]][0][0])
@@ -117,10 +135,10 @@ if S.get("saved"):
                     S.proposal2 = correct.propose(load_brain(), f"Rehearsal failures: {failures}. Original correction: {S.feedback}", fake_key=f"round{S.round}")
                 if S.get("proposal2"):
                     p2 = S.proposal2
-                    card(p2["summary"], who="Brain agent", gold=True)
+                    card(p2["summary"], who="Brain agent · proposed change", kind="needs-you")
                     for c in p2["changes"]:
-                        st.markdown(f'<div class="card"><div class="who">{c["path"]}</div>{c["new"]}</div>', unsafe_allow_html=True)
-                    if st.button("Confirm and rehearse again", type="primary"):
+                        st.markdown(f'<div class="card"><div class="path">{c["path"]}</div><div class="big">{c["new"]}</div></div>', unsafe_allow_html=True)
+                    if st.button("Confirm and rehearse again", key="confirm2"):
                         brain = correct.apply(load_brain(), p2["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
                         correct.remember(S.feedback, p2)
                         with st.spinner("rehearsing again…"):
