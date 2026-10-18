@@ -45,7 +45,7 @@ header[data-testid="stHeader"] { background:transparent; }
 [data-testid="stSidebar"] { background:#000; border-right:1px solid rgba(255,255,255,0.10); }
 [data-testid="stSidebar"] [data-testid="stSidebarContent"] { padding-top:12px; }
 .brand { display:flex; align-items:center; gap:12px; padding:8px 4px 18px; }
-.brand-mark { width:22px; height:22px; color:#F4F4F1; flex-shrink:0; }
+.brand-mark { width:24px; height:26px; min-width:24px; display:inline-block; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20140%20148%22%20fill%3D%22none%22%20stroke%3D%22%23F4F4F1%22%3E%3Cpath%20d%3D%22M86%2014%20C106%2032%20110%2060%2086%2088%20C62%2060%2066%2032%2086%2014%20Z%22%20stroke-width%3D%224%22%20stroke-dasharray%3D%224%209%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.7%22%2F%3E%3Cpath%20d%3D%22M86%2088%20C86%20104%2056%20102%2056%20114%22%20stroke-width%3D%224%22%20stroke-dasharray%3D%224%209%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.7%22%2F%3E%3Ccircle%20cx%3D%2286%22%20cy%3D%2288%22%20r%3D%224%22%20stroke-width%3D%223%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M56%2024%20C76%2042%2080%2070%2056%2098%20C32%2070%2036%2042%2056%2024%20Z%22%20stroke-width%3D%224.5%22%2F%3E%3Cline%20x1%3D%2256%22%20y1%3D%2240%22%20x2%3D%2256%22%20y2%3D%2286%22%20stroke-width%3D%222.5%22%20opacity%3D%22.45%22%2F%3E%3Cline%20x1%3D%2256%22%20y1%3D%2298%22%20x2%3D%2256%22%20y2%3D%22132%22%20stroke-width%3D%224.5%22%2F%3E%3Ccircle%20cx%3D%2256%22%20cy%3D%2298%22%20r%3D%226%22%20fill%3D%22%23F4F4F1%22%20stroke%3D%22none%22%2F%3E%3Ccircle%20cx%3D%2256%22%20cy%3D%22114%22%20r%3D%225%22%20stroke-width%3D%223%22%2F%3E%3C%2Fsvg%3E") no-repeat center / contain; }
 .wordmark-block { display:flex; flex-direction:column; line-height:1; }
 .wordmark { font-family:Georgia,'Times New Roman',serif; font-size:22px; font-weight:400; letter-spacing:-.015em; color:#F4F4F1; text-shadow:0 0 20px rgba(255,255,255,.18); white-space:nowrap; }
 .wordmark i { font-style:italic; }
@@ -58,11 +58,13 @@ header[data-testid="stHeader"] { background:transparent; }
 .nav-item.active-quiet { color:#F4F4F1; background:rgba(255,255,255,0.06); font-weight:400; }
 .nav-item.active-quiet::before { content:""; position:absolute; left:-6px; top:8px; bottom:8px; width:2px; border-radius:2px; background:linear-gradient(to bottom, transparent, rgba(255,255,255,.9), transparent); box-shadow:0 0 12px rgba(255,255,255,.35); }
 .eyebrow-page { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,0.40); margin-bottom:10px; font-family:'Geist Mono', monospace; }
-.page-h1 { font-size:26px; font-weight:300; letter-spacing:-.01em; color:#F4F4F1; margin:0 0 6px; }
+h1.page-h1, [data-testid="stMarkdownContainer"] h1.page-h1 { font-size:26px !important; font-weight:300 !important; letter-spacing:-.01em; color:#F4F4F1; margin:0 0 6px !important; padding:0 !important; }
+[data-testid="stHeading"] h2, .stMarkdown h2 { font-size:17px !important; font-weight:500 !important; margin-top:1.6rem !important; padding-bottom:0 !important; }
+[data-testid="stHeading"] h3, .stMarkdown h3 { font-size:15px !important; font-weight:500 !important; }
 .intro { color:rgba(255,255,255,0.55); font-size:13.5px; margin:0 0 8px; }
 .panel { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.10); border-radius:1rem; padding:16px 20px 4px; margin:8px 0 16px; }
 .block-container { padding-top:2.2rem; max-width:1120px; }
-.proto-foot { color:rgba(255,255,255,0.40); font-size:12.5px; font-family:'Geist Mono', monospace; }
+[data-testid="stSidebar"] p.proto-foot { color:rgba(255,255,255,0.40) !important; font-size:11.5px !important; line-height:1.5; font-family:'Geist', system-ui, sans-serif; margin-top:24px; }
 .score { width:100%; border-collapse:collapse; margin:8px 0 12px; font-size:0.95rem; }
 .score th { text-align:left; color:rgba(255,255,255,0.55); font-weight:500; padding:8px 10px; border-bottom:1px solid rgba(255,255,255,0.15); }
 .score td { padding:10px; border-bottom:1px solid rgba(255,255,255,0.08); vertical-align:top; }
@@ -99,15 +101,7 @@ def rehearse(brain, version):
 def load_brain(): return json.load(open("brain.json"))
 
 # ---------- MystFlo shell: left rail (the product's nav, Brain lit) ----------
-MARK = ('<svg class="brand-mark" viewBox="0 0 140 148" fill="none" stroke="currentColor">'
-        '<path d="M86 14 C106 32 110 60 86 88 C62 60 66 32 86 14 Z" stroke-width="1.2" stroke-dasharray="1.5 4.5" stroke-linecap="round" opacity=".7"/>'
-        '<path d="M86 88 C86 104 56 102 56 114" stroke-width="1.2" stroke-dasharray="1.5 4.5" stroke-linecap="round" opacity=".7"/>'
-        '<circle cx="86" cy="88" r="2.4" stroke-width="1" opacity=".8"/>'
-        '<path d="M56 24 C76 42 80 70 56 98 C32 70 36 42 56 24 Z" stroke-width="1.3"/>'
-        '<line x1="56" y1="40" x2="56" y2="86" stroke-width=".7" opacity=".45"/>'
-        '<line x1="56" y1="98" x2="56" y2="132" stroke-width="1.3"/>'
-        '<circle cx="56" cy="98" r="3.2" fill="currentColor" stroke="none"/>'
-        '<circle cx="56" cy="114" r="2.4" stroke-width="1"/></svg>')
+MARK = '<span class="brand-mark"></span>'   # the Mark, drawn as a background so the markdown sanitizer leaves it alone
 def nav(label, active=False, round_=False):
     return f'<div class="nav-item{" active-quiet" if active else ""}"><span class="ic{" ic-round" if round_ else ""}"></span>{label}</div>'
 
