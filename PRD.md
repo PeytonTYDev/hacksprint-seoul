@@ -25,10 +25,22 @@ MystFlo repo and is updated by PR after the event.
 ```
 
 ## 2. Problem
-Hosts with traction run on memory: deposit rules, refunds, prices, voice. An AI assistant
-reading an outdated or silent Brain is faithfully wrong, and usually too generous.
-Nobody checks before a guest finds out. Market tools (incl. Meta Business Agent) answer;
-none rehearse. MystFlo skips the test run for WhatsApp assistants today (#5519).
+Most Brains and knowledge bases are static documents. When an AI assistant gets something
+wrong, the founder fixes that one reply or edits one document, and nothing else changes.
+The learning loop is broken in three places:
+
+| break | today | with this |
+|---|---|---|
+| capture | she fixes the reply; the lesson is lost | her sentence becomes a correction record she approved |
+| propagation | one document edited; five assistants still wrong | one Brain; every assistant reads it live |
+| proof | nobody checks; the next guest is the test | per-founder evaluation in sandboxes before going live |
+
+A human teammate is taught differently: tell them once, ask them to show you, trust them
+with the next guest. Production AI assistants need the same, on the backend, per founder,
+every time she teaches something. Not self-learning: the Brain remembers what she taught
+and confirmed, and the rehearsal proves it. (Market: every WhatsApp assistant, Meta's
+included, answers the guest; none rehearses. MystFlo skips the test run for WhatsApp
+assistants today, #5519.)
 
 ## 3. Users and job
 Founder (host). Job: "when my assistant gets something wrong, I say it once, and I know
