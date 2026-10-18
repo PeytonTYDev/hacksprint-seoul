@@ -1,7 +1,7 @@
 # Get Support ready — a dress rehearsal in sealed boxes
 
 Hackathon prototype (Daytona HackSprint Seoul, 2026-10-18) of MystFlo issue #5519.
-Before a change to a founder's Brain is saved, the assistant rehearses on fake guests,
+After the founder teaches the Brain, and before that goes live, every assistant rehearses on fake guests,
 each in its own Daytona sandbox, and plain code checks the answers against the Brain.
 
 Fake studio, fake guests, fake payment and calendar. Nothing is sent to anyone.
