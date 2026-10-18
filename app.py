@@ -238,12 +238,16 @@ with left:
                 c1, c2 = st.columns([1, 2.2])
                 if c1.button("Confirm and save", key="confirm"):
                     brain = load_brain()
-                    with st.spinner("recording how every assistant behaves on the old Brain…"):
+                    where = " in seven Daytona sandboxes" if S.get("boxes") else ""
+                    with st.spinner("recording how every assistant behaves on the old Brain" + where + "…"):
                         S.before = rehearse(brain, "v0")
                     brain = brain_agent.apply(brain, p["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
                     brain_agent.remember(S.taught, p)
                     S.saved = True; S.t3 = now()
-                    logit("Confirmed · saved as v2 · 1 correction remembered"); st.rerun()
+                    logit("Confirmed · saved as v2 · 1 correction remembered")
+                    with st.spinner("saved · now every assistant rehearses on v2" + where + "…"):
+                        S.after = rehearse(brain, "v1")
+                    S.t4 = now(); logit("Rehearsed 7 assistants" + (" · 7 sandboxes" if S.get("boxes") else "")); st.rerun()
                 c2.markdown('<p class="note" style="margin-top:8px">Nothing is saved until you confirm.</p>', unsafe_allow_html=True)
             else:
                 md(f'<p class="note"><span class="pass">Saved as v2.</span> Correction memory holds {len(brain_agent.recall())} learned correction(s).</p>')
@@ -309,7 +313,7 @@ with right:
        f'<div class="rc-stand">v{2 if S.get("saved") else 1}<small>deposit rule</small></div>'
        f'<div class="rc-sub">{n_mem} correction(s) in memory · 6 assistants read this Brain</div>')
     nxt = {1: ("Teach your Brain", "the deposit reply above isn't how you'd say it"),
-           2: ("Confirm the change", "nothing is saved until you do"),
+           2: ("Confirm the change", "nothing is saved until you do; then every assistant rehearses before it goes live"),
            3: ("Rehearse every assistant", "before anything goes live"),
            4: ("Ready to go live", "every assistant passed") if all_right else ("Fix it", "a rehearsal row came back wrong; your Brain reads the judge's reason and proposes again")}[stage]
     md('<div class="rc-eyebrow">Next up</div>' + f'<div class="rc-next">{nxt[0]}<small>{nxt[1]}</small></div>')
