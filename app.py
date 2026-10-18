@@ -108,7 +108,24 @@ if S.get("saved"):
         if passed == len(GUESTS):
             st.success("Every assistant is ready. She taught the Brain once. Every assistant followed, proven before going live. Nothing was sent to anyone.")
         else:
-            st.error(f"Not ready: {len(GUESTS) - passed} still wrong. Support stays off until every assistant passes.")
+            st.error(f"Not ready: {len(GUESTS) - passed} still wrong. Nothing goes live until every assistant passes.")
+            S.setdefault("round", 2)
+            if S.round <= 3:
+                failures = "; ".join(f"{g['assistant']} ({g['id']}): {S.after[g['id']][0][1]}" for g in GUESTS if not S.after[g["id"]][0][0])
+                st.subheader(f"5 · The agent proposes again · round {S.round}")
+                if st.button("Ask the agent what else to change"):
+                    S.proposal2 = correct.propose(load_brain(), f"Rehearsal failures: {failures}. Original correction: {S.feedback}", fake_key=f"round{S.round}")
+                if S.get("proposal2"):
+                    p2 = S.proposal2
+                    card(p2["summary"], who="Brain agent", gold=True)
+                    for c in p2["changes"]:
+                        st.markdown(f'<div class="card"><div class="who">{c["path"]}</div>{c["new"]}</div>', unsafe_allow_html=True)
+                    if st.button("Confirm and rehearse again", type="primary"):
+                        brain = correct.apply(load_brain(), p2["changes"]); json.dump(brain, open("brain.json", "w"), indent=2)
+                        correct.remember(S.feedback, p2)
+                        with st.spinner("rehearsing again…"):
+                            S.before, S.after = S.after, rehearse(brain, f"v{S.round}")
+                        S.round += 1; S.proposal2 = None; st.rerun()
         with st.expander("What each assistant said and did"):
             for g in GUESTS:
                 _, r = S.after[g["id"]]
