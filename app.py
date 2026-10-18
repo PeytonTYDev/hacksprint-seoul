@@ -170,8 +170,9 @@ S.setdefault("log", [])            # activity, newest first: (text, time)
 def logit(text): S.log.insert(0, (text, now()))
 
 # ---------- masthead (the product's, with a Prototype badge instead of Private beta) ----------
+all_right = bool(S.get("after")) and all(S.after[g["id"]][0][0] for g in GUESTS)
 stage = 1 if not S.get("proposal") else 2 if not S.get("saved") else 3 if not S.get("after") else 4
-stage_text = {1: "Teach your Brain", 2: "Confirm the change", 3: "Rehearse every assistant", 4: "Ready to go live"}[stage]
+stage_text = {1: "Teach your Brain", 2: "Confirm the change", 3: "Rehearse every assistant", 4: "Ready to go live" if all_right else "A miss · your Brain proposes again"}[stage]
 md(f'<div class="mf-top"><div class="brand"><span class="brand-mark"></span><span class="wordmark-block"><span class="wordmark"><i>Myst</i>Flo</span>'
    f'<span class="wordmark-suffix">Platform</span></span></div><span class="badge-proto">Prototype</span>'
    f'<span class="top-links">Feedback · Let MystFlo help setup</span>'
@@ -196,7 +197,7 @@ left, right = st.columns([2.35, 1], gap="large")
 # =================== main column: the Brain page as a conversation ===================
 with left:
     md('<h1 class="page-h1">Brain</h1><p class="intro">The Brain holds how you run your business — every assistant reads it.</p>')
-    state = "waiting on you ↓" if stage < 4 else "every assistant ready"
+    state = "every assistant ready" if all_right else "waiting on you ↓"
     chips = [("Support flagged a reply", True), ("You taught", stage >= 2), ("Confirmed · v2", stage >= 3), ("Rehearsed · 7 assistants", stage >= 4)]
     if S.get("force_miss"): chips.append(("forced miss · demo", False))
     md('<div class="pinned"><div class="lab"><span>Building your Brain</span><b>● ' + state + '</b></div><div class="chips">'
@@ -317,7 +318,7 @@ with right:
     nxt = {1: ("Teach your Brain", "the deposit reply above isn't how you'd say it"),
            2: ("Confirm the change", "nothing is saved until you do"),
            3: ("Rehearse every assistant", "before anything goes live"),
-           4: ("Ready to go live", "every assistant passed")}[stage]
+           4: ("Ready to go live", "every assistant passed") if all_right else ("Ask your Brain what else to change", "a rehearsal row came back wrong; it reads the judge's reason and proposes again")}[stage]
     md('<div class="rc-eyebrow">Next up</div>' + f'<div class="rc-next">{nxt[0]}<small>{nxt[1]}</small></div>')
     if stage == 3 and S.get("boxes"):
         md('<div class="rc-eyebrow">Your Brain is on it</div><div class="rc-sub" style="margin-top:0">Seven Daytona sandboxes, one per assistant, deleted after.</div>')
