@@ -1,0 +1,437 @@
+<!doctype html>
+<!--
+  SC제일은행 SC Mobile home screen, redesigned in dark mode for the Mobbin MCP workshop.
+  SC Mobile 홈 화면 다크 모드 리디자인.
+
+  Picks / 고른 레퍼런스:
+  1. Revolut home: https://mobbin.com/screens/9e4593eb-6c61-4722-ac2d-6e8148fedd38
+     One balance in large type on a dark gradient, the actions right under it, a flat tab bar.
+     잔액 하나를 크게, 바로 아래에 행동 버튼, 평평한 하단 탭.
+  2. Revolut sending money flow: https://mobbin.com/flows/c4a1fcdc-9763-40cb-8470-3ca850e88da2
+     The white "Send" button and the dark grouped cards of its Review transfer screen.
+     흰색 Send 버튼과 송금 확인 화면의 어두운 카드 묶음.
+
+  Same rules as the template: plain HTML and CSS, every text twice (lang="ko" and lang="en"),
+  images from assets/. Open by double-click, or index.html?lang=en.
+  The character art has its tint baked in (no transparency), so each sits on a tile of the same tint.
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SC제일은행 SC Mobile 홈 / Home (dark)</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #07090f;
+    --surface: #131822;
+    --surface-raised: #1b2230;
+    --line: rgba(255, 255, 255, .07);
+    --ink: #f3f5f8;
+    --ink-muted: #8a94a6;
+    --ink-faint: #5c6576;
+    --sc-blue: #4a7dfa;
+    --sc-blue-soft: #8fb0ff;
+    --sc-green: #1ac101;
+    --hero-top: #1d3f9e;
+    --tint-cyan: #ddf7f9;
+    --tint-yellow: #fff2d5;
+    --eyebrow-orange: #f2b84b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: #000; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; text-align: inherit; }
+  img { display: block; }
+
+  /* Two languages: show the one on <html lang>, hide the other. 언어 전환. */
+  html[lang="ko"] [lang="en"], html[lang="en"] [lang="ko"] { display: none; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Workshop control, not part of the app: sits outside the phone column. */
+  .lang { position: fixed; top: 16px; left: 16px; z-index: 20; display: flex; padding: 3px; border-radius: 10px; background: #1b2230; box-shadow: 0 1px 3px rgba(0, 0, 0, .5); font-size: 13px; }
+  .lang button { padding: 6px 10px; border-radius: 7px; color: #a0a9b8; }
+  .lang button[aria-pressed="true"] { background: #f3f5f8; color: #07090f; }
+  @media (max-width: 560px) { .lang { position: static; width: fit-content; margin: 8px auto; } }
+
+  .app { position: relative; width: 393px; min-height: 852px; margin: 0 auto; background: var(--bg); overflow: hidden; }
+
+  /* Fixed top: status bar plus toolbar. Clear over the hero, solid once the page scrolls. 로그아웃 is no longer here. */
+  .top { position: sticky; top: 0; z-index: 10; height: 102px; transition: background-color .2s ease-out, box-shadow .2s ease-out; }
+  .top.is-scrolled { background: rgba(7, 9, 15, .92); box-shadow: 0 1px 0 var(--line); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+  .status { height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 12px 30px 0 46px; fill: currentColor; }
+  .status-time { display: flex; align-items: center; gap: 4px; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .status-icons { display: flex; align-items: center; gap: 6px; }
+  .toolbar { height: 58px; display: flex; align-items: center; padding: 0 12px 0 16px; }
+  .easy { display: flex; align-items: center; gap: 8px; font-size: 15px; white-space: nowrap; color: rgba(255, 255, 255, .85); }
+  .switch { width: 44px; height: 26px; border-radius: 13px; background: rgba(255, 255, 255, .22); position: relative; }
+  .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .3); transition: transform .2s ease-out; }
+  .switch[aria-checked="true"] { background: var(--sc-green); }
+  .switch[aria-checked="true"]::after { transform: translateX(18px); }
+  .toolbar-actions { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .icon-button { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: rgba(255, 255, 255, .1); }
+
+  /* Hero: the one real balance, then the actions. Replaces the LFC banner and the three quick links. */
+  .hero { margin-top: -102px; padding: 128px 16px 28px; background: linear-gradient(180deg, var(--hero-top) 0%, #12286b 45%, var(--bg) 100%); text-align: center; }
+  .hero-label { display: inline-flex; align-items: center; gap: 4px; font-size: 15px; color: rgba(255, 255, 255, .75); }
+  .hero-label .icon-button { width: 28px; height: 28px; background: none; color: rgba(255, 255, 255, .6); }
+  .balance { margin-top: 4px; font-size: 46px; font-weight: 700; letter-spacing: -1px; line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .balance-unit { font-size: 28px; font-weight: 600; margin-left: 2px; }
+  .accounts-pill { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-top: 14px; height: 34px; padding: 0 14px; border-radius: 17px; background: rgba(255, 255, 255, .16); font-size: 14px; font-weight: 600; }
+  .actions { display: flex; gap: 8px; margin-top: 30px; }
+  .action { height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 16px; border-radius: 24px; background: rgba(255, 255, 255, .12); font-size: 15px; font-weight: 600; white-space: nowrap; }
+  .action.is-primary { flex: 1; background: #fff; color: #07090f; font-size: 17px; }
+
+  /* Sections below the hero: dark grouped cards, as on Revolut's Review transfer screen. */
+  main { padding-bottom: 120px; }
+  .section { margin: 0 12px 12px; padding: 16px; border-radius: 18px; background: var(--surface); }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+  .section-title { font-size: 17px; font-weight: 700; }
+  .section-note { font-size: 13px; color: var(--ink-muted); }
+
+  /* 전체계좌: the seven other accounts as small tiles. Zero values stay quiet. */
+  .accounts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .account-tile { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 12px; background: var(--surface-raised); font-size: 14px; color: var(--ink-muted); }
+  .account-value { font-size: 17px; font-weight: 600; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .account-value.is-link { color: var(--sc-blue-soft); }
+
+  /* 내 카드: the customer holds no cards, so an empty state with one action. */
+  .cards-empty { display: flex; align-items: center; gap: 14px; }
+  .card-outline { flex-shrink: 0; width: 56px; height: 38px; border-radius: 6px; border: 1.5px dashed rgba(255, 255, 255, .25); }
+  .cards-text { flex: 1; font-size: 14px; color: var(--ink-muted); line-height: 20px; }
+  .cards-text strong { display: block; font-size: 16px; font-weight: 600; color: var(--ink); }
+  .cards-action { margin-top: 14px; width: 100%; height: 44px; border-radius: 22px; background: var(--surface-raised); font-size: 15px; font-weight: 600; text-align: center; color: var(--sc-blue-soft); }
+
+  /* 홍길동님을 위한 소식: four personal items as short rows. */
+  .for-you { display: flex; flex-direction: column; }
+  .for-you-row { display: flex; align-items: center; gap: 14px; padding: 10px 0; }
+  .for-you-row + .for-you-row { border-top: 1px solid var(--line); }
+  .art-tile { flex-shrink: 0; width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; overflow: hidden; }
+  .art-tile.is-cyan { background: var(--tint-cyan); }
+  .art-tile.is-yellow { background: var(--tint-yellow); }
+  .art-tile img { width: 44px; height: 44px; object-fit: contain; }
+  .row-text { flex: 1; min-width: 0; }
+  .row-eyebrow, .row-title, .event-title, .event-period { display: block; }
+  .row-eyebrow { font-size: 13px; color: var(--sc-blue-soft); font-variant-numeric: tabular-nums; }
+  .row-eyebrow.is-orange { color: var(--eyebrow-orange); }
+  .row-title { margin-top: 2px; font-size: 15px; line-height: 21px; font-weight: 500; }
+  .row-chevron { flex-shrink: 0; color: var(--ink-faint); }
+
+  /* 이벤트: eight event cards in one row the customer can scroll past. */
+  .events { display: flex; gap: 10px; margin: 0 -16px; padding: 0 16px 2px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 16px; scrollbar-width: none; }
+  .events::-webkit-scrollbar { display: none; }
+  .event { flex: 0 0 262px; display: flex; gap: 12px; padding: 12px; border-radius: 14px; background: var(--surface-raised); scroll-snap-align: start; }
+  .event-thumb { flex-shrink: 0; width: 72px; height: 72px; border-radius: 10px; object-fit: cover; }
+  .event-title { font-size: 14px; line-height: 20px; font-weight: 500; text-wrap: pretty; }
+  .event-period { margin-top: 6px; font-size: 12px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+
+  /* 상품: the five product shortcuts, now small chips at the bottom. */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { height: 36px; padding: 0 14px; border-radius: 18px; background: var(--surface-raised); font-size: 14px; }
+
+  .logout { display: block; margin: 20px auto 0; padding: 8px 12px; font-size: 14px; color: var(--ink-muted); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Bottom tab bar: five equal tabs, no raised circle. */
+  .nav { position: sticky; bottom: 0; z-index: 10; height: 88px; margin-top: -88px; display: grid; grid-template-columns: repeat(5, 1fr); padding: 8px 6px 0; background: rgba(13, 16, 23, .94); border-top: 1px solid var(--line); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: var(--ink-faint); }
+  .nav-item svg { width: 26px; height: 26px; }
+  .nav-item[aria-current="page"] { color: var(--ink); }
+
+  :focus-visible { outline: 2px solid var(--sc-blue-soft); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- Workshop control, not part of the app. 워크숍용 언어 버튼 (앱에는 없음). -->
+<div class="lang" role="group" aria-label="Language / 언어">
+  <button data-set-lang="ko" aria-pressed="true">한국어</button>
+  <button data-set-lang="en" aria-pressed="false">English</button>
+</div>
+
+<div class="app">
+
+  <!-- Top bar: status bar, 편한뱅킹 switch, search, notifications. 로그아웃 moved to the bottom of the page. -->
+  <header class="top">
+    <div class="status" aria-hidden="true">
+      <span class="status-time">9:41
+        <svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="3.5" r="2.6" /><path d="M1 11.5a5 4 0 0 1 10 0Z" /></svg>
+      </span>
+      <span class="status-icons">
+        <svg width="19" height="12" viewBox="0 0 19 12"><rect x="0" y="8" width="3" height="4" rx="1" /><rect x="5" y="5.5" width="3" height="6.5" rx="1" /><rect x="10" y="3" width="3" height="9" rx="1" /><rect x="15" y="0" width="3" height="12" rx="1" /></svg>
+        <svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 2.2c2.4 0 4.6.9 6.3 2.5l1.3-1.4A11 11 0 0 0 8.5.2 11 11 0 0 0 .9 3.3l1.3 1.4a9 9 0 0 1 6.3-2.5Zm0 3.8c1.4 0 2.6.5 3.6 1.4l1.3-1.4a7 7 0 0 0-9.8 0l1.3 1.4c1-.9 2.2-1.4 3.6-1.4Zm0 3.7L10.4 8a2.8 2.8 0 0 0-3.8 0Z" /></svg>
+        <svg width="28" height="13" viewBox="0 0 28 13"><rect x="0.5" y="0.5" width="24" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".4" /><rect x="2" y="2" width="21" height="9" rx="2" /><rect x="25.5" y="4" width="2" height="5" rx="1" opacity=".4" /></svg>
+      </span>
+    </div>
+    <div class="toolbar">
+      <div class="easy">
+        <span id="easy-label"><span lang="ko">편한뱅킹</span><span lang="en">Easy mode</span></span>
+        <button class="switch" role="switch" aria-checked="false" aria-labelledby="easy-label"></button>
+      </div>
+      <div class="toolbar-actions">
+        <button class="icon-button">
+          <span class="sr-only"><span lang="ko">검색</span><span lang="en">Search</span></span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7.5" /><path d="m21 21-4.5-4.5" /></svg>
+        </button>
+        <button class="icon-button">
+          <span class="sr-only"><span lang="ko">알림</span><span lang="en">Notifications</span></span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 1.5h-15L6 17Z" /><path d="M10 21h4" /></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero (Revolut home): 입출금 balance first, 이체 right under it (white, as in Revolut's send flow). -->
+  <section class="hero" aria-labelledby="balance-label">
+    <p class="hero-label">
+      <span id="balance-label"><span lang="ko">입출금</span><span lang="en">Checking</span></span>
+      <button class="icon-button">
+        <span class="sr-only"><span lang="ko">금액 숨기기</span><span lang="en">Hide balances</span></span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /><path d="M4 20 20 4" /></svg>
+      </button>
+    </p>
+    <p class="balance"><span lang="ko">99,749<span class="balance-unit">원</span></span><span lang="en">₩99,749</span></p>
+    <a class="accounts-pill" href="#accounts">
+      <span lang="ko">전체계좌</span><span lang="en">All accounts</span>
+      <svg width="12" height="12" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 3.8 2.5 2.5 2.5-2.5" /></svg>
+    </a>
+    <div class="actions">
+      <button class="action is-primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6" /></svg>
+        <span lang="ko">이체</span><span lang="en">Transfer</span>
+      </button>
+      <button class="action">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7Z" /></svg>
+        <span lang="ko">혜택</span><span lang="en">Benefits</span>
+      </button>
+      <button class="action">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 3v9h9" /></svg>
+        <span lang="ko">마이데이터</span><span lang="en">MyData</span>
+      </button>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- 전체계좌 / All accounts: the other accounts, small and quiet. 현대카드 moved to 내 카드 below. -->
+    <section class="section" id="accounts" aria-labelledby="accounts-title">
+      <div class="section-head">
+        <h2 class="section-title" id="accounts-title"><span lang="ko">전체계좌</span><span lang="en">All accounts</span></h2>
+      </div>
+      <div class="accounts-grid">
+        <button class="account-tile"><span lang="ko">다른은행</span><span lang="en">Other banks</span>
+          <span class="account-value"><span lang="ko">0개</span><span lang="en">0 linked</span></span>
+        </button>
+        <button class="account-tile"><span lang="ko">예적금</span><span lang="en">Deposits &amp; savings</span>
+          <span class="account-value"><span lang="ko">0원</span><span lang="en">₩0</span></span>
+        </button>
+        <button class="account-tile"><span lang="ko">외화예금</span><span lang="en">Foreign currency</span>
+          <span class="account-value"><span lang="ko">0개</span><span lang="en">0 accounts</span></span>
+        </button>
+        <button class="account-tile"><span lang="ko">투자상품</span><span lang="en">Investments</span>
+          <span class="account-value is-link"><span lang="ko">확인하기</span><span lang="en">View</span></span>
+        </button>
+        <button class="account-tile"><span lang="ko">보험</span><span lang="en">Insurance</span>
+          <span class="account-value is-link"><span lang="ko">확인하기</span><span lang="en">View</span></span>
+        </button>
+        <button class="account-tile"><span lang="ko">대출</span><span lang="en">Loans</span>
+          <span class="account-value"><span lang="ko">0개</span><span lang="en">0 loans</span></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 내 카드 / My cards: the cards the customer holds. None yet (현대카드 0개), so one action. -->
+    <section class="section" aria-labelledby="cards-title">
+      <div class="section-head">
+        <h2 class="section-title" id="cards-title"><span lang="ko">내 카드</span><span lang="en">My cards</span></h2>
+        <span class="section-note"><span lang="ko">현대카드 0개</span><span lang="en">Hyundai Card · 0 cards</span></span>
+      </div>
+      <div class="cards-empty">
+        <div class="card-outline" aria-hidden="true"></div>
+        <p class="cards-text">
+          <strong><span lang="ko">아직 가진 카드가 없어요</span><span lang="en">You don't hold any cards yet</span></strong>
+          <span lang="ko">카드를 만들면 여기에서 바로 볼 수 있어요</span><span lang="en">Cards you get show up here</span>
+        </p>
+      </div>
+      <button class="cards-action"><span lang="ko">카드 만들기</span><span lang="en">Get a card</span></button>
+    </section>
+
+    <!-- 홍길동님을 위한 소식: the four personal feed items as short rows. -->
+    <section class="section" aria-labelledby="for-you-title">
+      <div class="section-head">
+        <h2 class="section-title" id="for-you-title"><span lang="ko">홍길동님을 위한 소식</span><span lang="en">For Hong Gildong</span></h2>
+      </div>
+      <div class="for-you">
+        <button class="for-you-row">
+          <span class="art-tile is-cyan"><img src="assets/char-book.png" alt=""></span>
+          <span class="row-text">
+            <span class="row-eyebrow">2026.10.17</span>
+            <span class="row-title"><span lang="ko">홍길동님, 이번 달 자산관리 일정을 챙겨보세요</span><span lang="en">Hong Gildong, plan this month's wealth schedule</span></span>
+          </span>
+          <svg class="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6" /></svg>
+        </button>
+        <button class="for-you-row">
+          <span class="art-tile is-yellow"><img src="assets/char-horse.png" alt=""></span>
+          <span class="row-text">
+            <span class="row-eyebrow is-orange">2026.10.17</span>
+            <span class="row-title"><span lang="ko">홍길동님~ 운세가 도착했어요!</span><span lang="en">Hong Gildong~ your fortune is here!</span></span>
+          </span>
+          <svg class="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6" /></svg>
+        </button>
+        <button class="for-you-row">
+          <span class="art-tile is-cyan"><img src="assets/char-rabbit.png" alt=""></span>
+          <span class="row-text">
+            <span class="row-eyebrow"><span lang="ko">SC제일은행 X 굴리굴리</span><span lang="en">SC Bank Korea X Gooligooli</span></span>
+            <span class="row-title"><span lang="ko">10월 배경화면 받아 가세요!</span><span lang="en">Get your October wallpaper!</span></span>
+          </span>
+          <svg class="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6" /></svg>
+        </button>
+        <button class="for-you-row">
+          <span class="art-tile is-yellow"><img src="assets/char-news.png" alt=""></span>
+          <span class="row-text">
+            <span class="row-eyebrow is-orange"><span lang="ko">오늘의 경제뉴스</span><span lang="en">Today's economy news</span></span>
+            <span class="row-title"><span lang="ko">경제용 Pick 하루1분 경제뉴스</span><span lang="en">Economy Pick: one-minute daily news</span></span>
+          </span>
+          <svg class="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6" /></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- 이벤트: the eight events, in app order, as one sideways row. The LFC banner was the same event as the soccer school card. -->
+    <section class="section" aria-labelledby="events-title">
+      <div class="section-head">
+        <h2 class="section-title" id="events-title"><span lang="ko">이벤트</span><span lang="en">Events</span></h2>
+        <span class="section-note"><span lang="ko">8개</span><span lang="en">8 events</span></span>
+      </div>
+      <div class="events">
+        <button class="event">
+          <img class="event-thumb" src="assets/thumb-pb.jpg" alt="">
+          <span>
+            <span class="event-title"><span lang="ko">PB스타트 조건 충족 시 경품 증정!</span><span lang="en">Meet the PB Start terms and win a prize!</span></span>
+            <span class="event-period">2026.08.10 - 12.31</span>
+          </span>
+        </button>
+        <button class="event">
+          <img class="event-thumb" src="assets/thumb-air.jpg" alt="">
+          <span>
+            <span class="event-title"><span lang="ko">대한항공 마일리지 예금 출시 이벤트</span><span lang="en">Korean Air mileage deposit launch event</span></span>
+            <span class="event-period">2026.08.03 - 10.31</span>
+          </span>
+        </button>
+        <button class="event">
+          <img class="event-thumb" src="assets/thumb-lfc.jpg" alt="">
+          <span>
+            <span class="event-title"><span lang="ko">리버풀FC 싸커스쿨 2026 참여 방법 알아보기</span><span lang="en">Liverpool FC Soccer School 2026: how to join</span></span>
+            <span class="event-period">2026.10.12 - 11.06</span>
+          </span>
+        </button>
+        <button class="event">
+          <img class="event-thumb" src="assets/thumb-autumn.jpg" alt="">
+          <span>
+            <span class="event-title"><span lang="ko">스마트박스와 함께, 반가워 가을!</span><span lang="en">Hello autumn, with Smart Box!</span></span>
+            <span class="event-period">2026.09.01 - 10.30</span>
+          </span>
+        </button>
+        <button class="event">
+          <img class="event-thumb" src="assets/thumb-lotte.jpg" alt="">
+          <span>
+            <span class="event-title"><span lang="ko">롯데모바일교환권 최대 3만원 받는 방법 알아보기</span><span lang="en">Get up to ₩30,000 in Lotte mobile vouchers</span></span>
+            <span class="event-period">2026.10.01 - 10.31</span>
+          </span>
+        </button>
+        <button class="event">
+          <img class="event-thumb" src="assets/thumb-random.jpg" alt="">
+          <span>
+            <span class="event-title"><span lang="ko">랜덤박스 Open! 100% 드리는 경품 이벤트</span><span lang="en">Random box open! Everyone wins a prize</span></span>
+            <span class="event-period">2026.09.07 - 10.30</span>
+          </span>
+        </button>
+        <button class="event">
+          <img class="event-thumb" src="assets/thumb-first.jpg" alt="">
+          <span>
+            <span class="event-title"><span lang="ko">Hi! 첫 거래 고객에게만 드리는 특별한 금리 혜택</span><span lang="en">Hi! A special rate for first-time customers</span></span>
+            <span class="event-period">2026.09.14 - 12.31</span>
+          </span>
+        </button>
+        <button class="event">
+          <img class="event-thumb" src="assets/thumb-kit.jpg" alt="">
+          <span>
+            <span class="event-title"><span lang="ko">리버풀FC 홈 유니폼 받는 방법 알아보기</span><span lang="en">How to get a Liverpool FC home kit</span></span>
+            <span class="event-period">2026.09.21 - 11.30</span>
+          </span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 상품 둘러보기: the five product shortcuts, demoted to chips. -->
+    <section class="section" aria-labelledby="products-title">
+      <div class="section-head">
+        <h2 class="section-title" id="products-title"><span lang="ko">상품 둘러보기</span><span lang="en">Browse products</span></h2>
+      </div>
+      <nav class="chips">
+        <button class="chip"><span lang="ko">입출금</span><span lang="en">Checking</span></button>
+        <button class="chip"><span lang="ko">예적금</span><span lang="en">Savings</span></button>
+        <button class="chip"><span lang="ko">신용카드</span><span lang="en">Credit card</span></button>
+        <button class="chip"><span lang="ko">체크카드</span><span lang="en">Debit card</span></button>
+        <button class="chip"><span lang="ko">대출</span><span lang="en">Loans</span></button>
+      </nav>
+    </section>
+
+    <button class="logout"><span lang="ko">로그아웃</span><span lang="en">Log out</span></button>
+
+  </main>
+
+  <!-- Bottom tab bar: five equal tabs, no raised SC circle. -->
+  <nav class="nav">
+    <button class="nav-item" aria-current="page">
+      <svg viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13.5 15 5l10 8.5V25H18v-6.5h-6V25H5Z" /></svg>
+      <span lang="ko">홈</span><span lang="en">Home</span>
+    </button>
+    <button class="nav-item">
+      <svg viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11h14l-4-4M21 19H7l4 4" /></svg>
+      <span lang="ko">이체</span><span lang="en">Transfer</span>
+    </button>
+    <button class="nav-item">
+      <svg viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="16" width="4" height="8" rx="2" /><rect x="11" y="12" width="4" height="12" rx="2" /><rect x="18" y="6" width="4" height="18" rx="2" /><path d="M26 7v17" /></svg>
+      <span lang="ko">투자</span><span lang="en">Invest</span>
+    </button>
+    <button class="nav-item">
+      <svg viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h3.5l3 13h13l2.5-9H8" /><circle cx="11" cy="23" r="1.8" /><circle cx="21" cy="23" r="1.8" /></svg>
+      <span lang="ko">상품</span><span lang="en">Products</span>
+    </button>
+    <button class="nav-item">
+      <svg viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="8" height="8" rx="1" /><rect x="17" y="5" width="8" height="8" rx="1" /><rect x="5" y="17" width="8" height="8" rx="1" /><rect x="17" y="17" width="8" height="8" rx="1" /></svg>
+      <span lang="ko">전체</span><span lang="en">All</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- The only script: language switch, 편한뱅킹 switch, and the top bar background on scroll. -->
+<script>
+  function setLanguage(lang) {
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-set-lang]").forEach((button) => {
+      button.setAttribute("aria-pressed", button.dataset.setLang === lang);
+    });
+  }
+  document.querySelectorAll("[data-set-lang]").forEach((button) => {
+    button.addEventListener("click", () => setLanguage(button.dataset.setLang));
+  });
+  setLanguage(new URLSearchParams(location.search).get("lang") === "en" ? "en" : "ko");
+
+  document.querySelectorAll('[role="switch"]').forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      toggle.setAttribute("aria-checked", toggle.getAttribute("aria-checked") !== "true");
+    });
+  });
+
+  const topBar = document.querySelector(".top");
+  window.addEventListener("scroll", () => topBar.classList.toggle("is-scrolled", window.scrollY > 4), { passive: true });
+</script>
+</body>
+</html>
